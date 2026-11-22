@@ -12,6 +12,7 @@ Testo unico di studio del corso (LM Ingegneria Informatica, UNINA, a.a. 2026-27,
 | 2 | [[#Lezione 2 — VHDL: descrizione Dataflow\|VHDL: descrizione Dataflow]] | 2-Descrizione Dataflow.pdf |
 | 3 | [[#Lezione 3 — VHDL: descrizione strutturale\|VHDL: descrizione strutturale]] | 3-Descrizione Strutturale.pdf |
 | 4 | [[#Lezione 4 — VHDL: tecniche di simulazione e ritardi\|VHDL: tecniche di simulazione e ritardi]] | 4-Tecniche di simulazione e ritardi.pdf |
+| 5 | [[#Lezione 5 — VHDL: descrizione comportamentale\|VHDL: descrizione comportamentale]] | 5-Descrizione Comportamentale.pdf |
 
 <!-- Ogni lezione è una sezione «## Lezione N — titolo» (trattino lungo): diventa la pagina lezione-N.html del sito.
 
@@ -1358,3 +1359,379 @@ END delay;
 *`waveform` ha impulsi più lunghi (>5) e più corti (<5) di 5 ns. `target2` (transport) li riproduce tutti con 5 ns di ritardo; `target1` (inertial) scarta quelli più corti di 5 ns. La riga «Difference» evidenzia gli intervalli in cui i due segnali differiscono.*
 
 *Approfondimenti nel wiki: [[simulazione-tempo-quantizzato]], [[simulazione-ad-eventi]], [[delta-cycle]], [[modello-tempificazione-vhdl]], [[ritardi-inertial-transport]], [[assegnazione-concorrente]]*
+
+## Lezione 5 — VHDL: descrizione comportamentale
+
+*Fonte: 5-Descrizione Comportamentale.pdf, 27 pagine (slide «VHDL Comportamentale», v1.1).*
+
+### Roadmap · [[5-Descrizione Comportamentale.pdf#page=1|p. 1]]
+
+Come si descrive un sistema digitale in VHDL con descrizioni di tipo **comportamentale** (behavioral): process, wait statements e sensitivity list, variabili, assegnazione sequenziale, istruzioni sequenziali, assert.
+
+### Process · [[5-Descrizione Comportamentale.pdf#page=2|p. 2]]–[[5-Descrizione Comportamentale.pdf#page=4|4]]
+
+- Il **process** è l'istruzione fondamentale delle descrizioni comportamentali. Rappresenta una porzione del progetto descritta dal punto di vista **algoritmico**: conta il comportamento (cosa fa), non l'implementazione (come lo fa).
+- Un process:
+  - è uno **statement concorrente** (come un'assegnazione o un'istanziazione) che si usa nell'architecture body e reagisce «contemporaneamente» agli altri statement concorrenti;
+  - contiene **solo istruzioni sequenziali** (assegnazioni sequenziali, if-then-else, case, …);
+  - è un insieme di statement sequenziali che, considerato come un unico statement, è concorrente con gli altri.
+
+```vhdl
+label: PROCESS (segnale_1, ..., segnale_n);
+  dichiarazioni di tipi;
+  dichiarazioni di costanti;
+  dichiarazioni di variabili;
+  dichiarazioni di procedure e functions;
+BEGIN
+  istruzione sequenziale_1;
+  ...
+  istruzione sequenziale_N;
+END PROCESS label;
+```
+
+- La **label** (opzionale) identifica il process durante la simulazione.
+- Tre parti: (1) una **sensitivity list** (opzionale) con gli eventi trigger; (2) una **parte dichiarativa** (tipi, sottotipi, costanti, variabili, procedure e function, a visibilità locale); (3) un **process body**, il comportamento, cioè le istruzioni eseguite in sequenza fra `BEGIN` ed `END PROCESS`.
+- Nel process body l'ordine di esecuzione è quello in cui le istruzioni compaiono. Sono leciti **solo statement sequenziali**: l'assegnazione di segnale `<=` è lecita (dentro un process è considerata sequenziale); le assegnazioni selezionate e condizionate si possono usare in un process solo con il VHDL 2008.
+
+> ⚠️ Contraddizione: nello schema della slide la sensitivity list è seguita da `;`: si scrive `label: PROCESS (segnale_1, …, segnale_n)` senza punto e virgola.
+
+### Timing: inizializzazione ed esecuzione · [[5-Descrizione Comportamentale.pdf#page=5|p. 5]]–[[5-Descrizione Comportamentale.pdf#page=6|6]]
+
+- **Inizializzazione** (al tempo $0 + 0\delta$): ai segnali si assegnano i valori iniziali (espliciti o di default del tipo); si eseguono **tutti** i process finché tutti non si sospendono; si eseguono anche le assegnazioni concorrenti `<=` (equivalenti a process), il cui risultato si avrà nei delta successivi.
+- Dopo l'inizializzazione la simulazione è **pilotata dagli eventi**.
+- Ogni esecuzione successiva di un process è innescata da eventi indicati esplicitamente. Un process esegue tutte le istruzioni sequenziali e poi **riparte dall'inizio**, come in un loop infinito.
+- Due template di process, **alternativi** (non si possono usare insieme una sensitivity list e un `WAIT` nello stesso process):
+  - **con sensitivity list**: (ri)attivato da un evento su un segnale della lista, sospeso quando arriva alla fine;
+  - **con istruzioni WAIT**: eseguito al tempo 0, si sospende quando incontra un `WAIT` e riprende quando la condizione del `WAIT` (se prevista) è verificata.
+
+```vhdl
+PROCESS (segnale_1, ..., segnale_n)        PROCESS
+  dichiarazioni                              dichiarazioni
+BEGIN                                      BEGIN
+  process body                               ...
+END PROCESS;                                 WAIT ...;
+                                             ...
+                                           END PROCESS;
+```
+
+### Wait statements · [[5-Descrizione Comportamentale.pdf#page=7|p. 7]]–[[5-Descrizione Comportamentale.pdf#page=8|8]]
+
+- Il loop infinito di un process con `WAIT` può essere **sospeso** (suspended) da un'istruzione `WAIT` e **riavviato** (resumed) quando si verifica una condizione opportuna.
+- `WAIT` è un'istruzione sequenziale: compare solo nel process body. Forme:
+
+```vhdl
+WAIT FOR waiting_time;
+WAIT ON waiting_sensitivity_list;
+WAIT UNTIL waiting_condition;
+WAIT;
+```
+
+```vhdl
+WAIT FOR 4ns;                          -- sospende il processo per 4ns
+WAIT ON s1, s2, clk;                   -- aspetta un evento su uno dei segnali s1, s2, clk
+WAIT UNTIL (clk'EVENT and clk= '1');   -- aspetta il fronte 0->1 del segnale clk
+WAIT;                                  -- "forever"
+```
+
+Nella slide gli apici di `clk'EVENT` e `'1'` non sono visibili; qui sono ripristinati.
+
+### Sensitivity list · [[5-Descrizione Comportamentale.pdf#page=9|p. 9]]
+
+- Una dichiarazione di process può contenere una **sensitivity list**: gli identificativi dei segnali a cui il process «reagisce».
+  - Un evento su questi segnali attiva il process sospeso, che si esegue fino alla fine e si sospende fino al prossimo evento su un segnale della lista.
+  - I process con sensitivity list sono comunque eseguiti **una volta in fase di inizializzazione**.
+- Una sensitivity list equivale a un'istruzione `WAIT ON sensitivity list;` **alla fine** del process:
+
+```vhdl
+PROCESS (segnale_1, ..., segnale_n)        PROCESS
+  dichiarazioni                              dichiarazioni
+BEGIN                                      BEGIN
+  process body                               process body
+END PROCESS;                                 WAIT ON (segnale_1, ..., segnale_n);
+                                           END PROCESS;
+```
+
+### Interazione con l'esterno · [[5-Descrizione Comportamentale.pdf#page=10|p. 10]]
+
+- **Visibilità**: un process vede tutti gli oggetti definiti nella sua architettura (tipi, sottotipi, costanti, segnali, procedure, functions, …): il suo scope è quello dell'architettura che lo contiene. Le dichiarazioni interne al process sono locali.
+- **Comunicazione**: un process comunica con l'esterno (e con altri process) **solo tramite i segnali** che vede, assegna e legge. Non si possono condividere variabili fra process; non si possono dichiarare segnali dentro un process.
+
+### Variabili · [[5-Descrizione Comportamentale.pdf#page=11|p. 11]]–[[5-Descrizione Comportamentale.pdf#page=12|12]]
+
+- Le variabili rappresentano lo **stato** del sottosistema descritto dal process o **risultati intermedi** dell'elaborazione.
+- Ogni variabile ha una dichiarazione (tipo, valore di inizializzazione): `VARIABLE nome_variabile : tipo;`
+- Si assegna con `:=` (analogo a `<=` per i segnali).
+- Segnale e variabile sono oggetti completamente diversi per la **tempificazione**:
+  - un'assegnazione di segnale `<=` comporta la **schedulazione** di un evento (al più un delta dopo) e non è mai immediata;
+  - un'assegnazione di variabile `:=` non schedula nessun evento ed è **immediata**.
+
+```vhdl
+process(A)                         process(A)
+begin                                variable v_temp : integer;
+  s_temp <= A + 1;                 begin
+  Y_sig  <= s_temp + 1;              v_temp := A + 1;
+end process;                         Y_var  <= v_temp + 1;
+                                   end process;
+```
+
+- A sinistra: `Y_sig <= s_temp + 1` usa il **vecchio** valore di `s_temp`; poiché il process ha solo `A` nella sensitivity list, si sospende e `Y_sig` non assume mai il valore desiderato.
+- A destra: `Y_var <= v_temp + 1` usa il **nuovo** valore di `v_temp`, aggiornato immediatamente.
+
+### Schedulazione degli eventi con segnali e variabili · [[5-Descrizione Comportamentale.pdf#page=13|p. 13]]–[[5-Descrizione Comportamentale.pdf#page=14|14]]
+
+```vhdl
+SIGNAL tmp: std_logic;
+PROCESS (x)
+BEGIN
+  tmp <= x;
+  y <= NOT tmp;
+END PROCESS;
+```
+
+Con `x = 1`, `tmp = 1`, `y = 0` e un evento `x: 1→0` all'istante T:
+- all'istante T il process si attiva e si schedula `tmp: 1→0` a $T + \delta$;
+- nello stesso istante T si incontra `y <= NOT tmp`, ma `tmp` non è ancora aggiornato: si schedula `y: 0→0` a $T + \delta$ (nessuna variazione su `y`);
+- il process arriva a `END PROCESS` e si sospende, e le assegnazioni vengono eseguite. In pratica il process si esegue nell'istante T.
+
+```vhdl
+SIGNAL in : std_logic;
+PROCESS (in)
+  VARIABLE tmp, out : std_logic;
+BEGIN
+  tmp := in;
+  out := NOT tmp;
+END PROCESS;
+```
+
+Per lo stesso evento `in: 1→0` a T:
+- il process si attiva a T; `tmp := in` è eseguita istantaneamente, quindi `tmp` vale 0 all'istante T;
+- `out := NOT tmp` trova `tmp` già a 0, quindi `out` vale 1 all'istante T.
+
+> ⚠️ Contraddizione: `in` e `out` sono parole riservate del VHDL e non possono essere nomi di segnali o variabili; nel codice vanno rinominate (ad es. `ingr`, `uscita`).
+
+### Assegnazione di un segnale · [[5-Descrizione Comportamentale.pdf#page=15|p. 15]]
+
+I due frammenti sono equivalenti: l'assegnazione è **concorrente** a sinistra e **sequenziale** nel process a destra.
+
+```vhdl
+ARCHITECTURE ...                 ARCHITECTURE ...
+BEGIN                            BEGIN
+  a <= b;                          PROCESS (b)
+  c <= d;                          BEGIN
+END                                  a <= b;
+                                   END PROCESS;
+                                   c <= d;
+                                 END
+```
+
+- A sinistra: un evento su `b` comporta un'assegnazione e un evento su `a`.
+- A destra: `b` è la sensitivity list del process; il process si esegue una volta per ogni evento su `b` e poi si sospende fino al prossimo evento su `b`.
+
+### Assegnazione sequenziale · [[5-Descrizione Comportamentale.pdf#page=16|p. 16]]
+
+- Un'assegnazione di segnale dentro un process (**assegnazione sequenziale**) **ha effetto quando il process si sospende**.
+- Se nello stesso process ci sono più assegnazioni allo stesso segnale, **solo l'ultima è valida**:
+
+```vhdl
+SIGNAL A, B, Y : integer;
+PROCESS (A, B)
+BEGIN
+  Y <= A * B;
+  Y <= B;
+END PROCESS;
+```
+
+- Se un process assegna un segnale che compare nella sua sensitivity list, un evento su quel segnale può **riattivare** il process:
+
+```vhdl
+SIGNAL A, B, C, X, Y, Z : integer;
+PROCESS (A, B, C)
+BEGIN
+  X <= A + 1;
+  Y <= A * B;
+  Z <= C + X;
+  B <= Z * C;
+END PROCESS;
+```
+
+### Tempificazione di un'assegnazione sequenziale · [[5-Descrizione Comportamentale.pdf#page=17|p. 17]]–[[5-Descrizione Comportamentale.pdf#page=19|19]]
+
+```vhdl
+ARCHITECTURE sequentiality_demo OF process_example IS
+BEGIN
+  PROCESS (a,b)
+  BEGIN
+    x <= a;
+    y <= b;
+  END PROCESS;
+END process_example ;
+```
+
+- Eseguendo il process all'istante T: prima si schedula su `x` l'assegnazione di `a` (a $T + \delta$), poi su `y` quella di `b` (a $T + \delta$). Le assegnazioni sono incontrate nello stesso istante T e schedulate entrambe a $T + \delta$, ma in sequenza; `x` e `y` ricevono i valori **nello stesso istante** $T + \delta$.
+
+```vhdl
+ARCHITECTURE sequentiality_demo OF process_example IS
+BEGIN
+  PROCESS
+  BEGIN
+    x <= a AFTER 10 NS;
+    y <= b AFTER 6 NS;
+  END PROCESS;
+END process_example ;
+```
+
+- Anche qui gli eventi su `x` e `y` sono schedulati contemporaneamente, ma i segnali commutano in istanti diversi: `y` riceve `b` **4 ns prima** che `x` riceva `a`.
+
+> ⚠️ Contraddizione: questo process non ha né sensitivity list né `WAIT`, quindi in simulazione si ripete all'infinito al tempo 0 senza mai sospendersi; serve almeno un `WAIT` (ad es. `WAIT ON a, b;` in fondo). Le architecture terminano con `END process_example` invece di `END sequentiality_demo`.
+
+- La tempificazione delle assegnazioni di segnale nei process va tenuta bene a mente: il significato può essere diverso da quello che si intuirebbe con la semantica di un linguaggio come il C.
+
+```vhdl
+ARCHITECTURE sequentiality_demo OF process_example IS
+  SIGNAL x_sig : BIT := '0';
+BEGIN
+  PROCESS
+  BEGIN
+    x_sig <= '1';
+    IF x_sig = '1' THEN
+      istruzione_1
+    ELSE
+      istruzione_2
+    END IF;
+  END PROCESS;
+END process_example ;
+```
+
+- L'evento '1' su `x_sig` dovuto a `x_sig <= '1'` è schedulato un $\delta$ **dopo** la valutazione della condizione dell'`IF`: se all'attivazione del process `x_sig = 0`, si prende il ramo 2. L'`IF` non risente dell'assegnazione precedente.
+- Con una **variabile** al posto del segnale il comportamento sarebbe analogo al C (si eseguirebbe l'istruzione_1).
+
+### Istruzioni sequenziali · [[5-Descrizione Comportamentale.pdf#page=20|p. 20]]
+
+Nel process si usa un insieme completo di istruzioni sequenziali, come in un linguaggio di programmazione: `IF … THEN`, `CASE … WHEN`, `FOR … LOOP`, `WHILE … LOOP`.
+
+#### If … Then · [[5-Descrizione Comportamentale.pdf#page=21|p. 21]]
+
+- Controlla il flusso di esecuzione nel process body: le condizioni sono espressioni booleane che, se vere, abilitano il ramo relativo (statement sequenziali). Può contenere `ELSIF`, eseguiti quando le condizioni precedenti non sono verificate, e un `ELSE` per i casi esclusi da tutti i rami.
+
+```vhdl
+IF condition_1 THEN               IF condition_1 THEN           IF condition THEN
+  sequenza_di_istruzioni_1;         sequenza_di_istruzioni_1;     sequenza_di_istruzioni_1;
+ELSIF condition_2 THEN            ELSIF condition_2 THEN        END IF;
+  sequenza_di_istruzioni_2;         sequenza_di_istruzioni_2;
+ELSIF condition_N THEN            END IF;
+  sequenza_di_istruzioni_N;
+ELSE
+  sequenza_di_istruzioni_N+1;
+END IF;
+```
+
+- Utile quando i casi **non sono tutti mutuamente esclusivi** e si vuole stabilire una **priorità** nei confronti.
+
+#### Case … When · [[5-Descrizione Comportamentale.pdf#page=22|p. 22]]–[[5-Descrizione Comportamentale.pdf#page=23|23]]
+
+- Quando i casi sono **mutuamente esclusivi** è utile il `CASE … WHEN`; se i casi elencati non esauriscono tutti i possibili casi si usa `OTHERS`.
+
+```vhdl
+CASE segnale/variabile_di_selezione IS       CASE segnale/variabile_di_selezione IS
+  WHEN caso_1 =>                               WHEN caso_1 =>
+    sequenza_di_istruzioni_1;                    sequenza_di_istruzioni_1;
+  WHEN caso_2 =>                               WHEN caso_N =>
+    sequenza_di_istruzioni_2;                    sequenza_di_istruzioni_N;
+  WHEN caso_N =>                               WHEN OTHERS =>
+    sequenza_di_istruzioni_N;                    sequenza_di_istruzioni_N+1;
+END CASE;                                    END CASE;
+```
+
+- Con un `CASE … WHEN` si implementa una qualunque **tabella di verità**. Implementazione comportamentale di una XOR a 3 ingressi:
+
+```vhdl
+ENTITY XOR_3 IS PORT (
+  x : IN std_logic_vector(2 DOWNTO 0);
+  y : OUT std_logic);
+END XOR_3 ;
+--
+ARCHITECTURE behavioral OF XOR_3 IS
+BEGIN
+PROCESS (x)
+  BEGIN
+  CASE x IS
+    WHEN  000  => y <=  0 ;
+    WHEN  001  => y <=  1 ;
+    WHEN  010  => y <=  1 ;
+    WHEN  011  => y <=  0 ;
+    WHEN  100  => y <=  1 ;
+    WHEN  101  => y <=  0 ;
+    WHEN  110  => y <=  0 ;
+    WHEN  111  => y <=  1 ;
+    WHEN OTHERS => y <=  X ;
+  END IF;
+END PROCESS;
+END behavioral;
+```
+
+> ⚠️ Contraddizione: nella slide mancano i delimitatori dei letterali (`"000"`, …, `'0'`, `'1'`, `'X'`) e il `CASE` va chiuso con `END CASE;`, non `END IF;`.
+
+#### For … Loop · [[5-Descrizione Comportamentale.pdf#page=24|p. 24]]–[[5-Descrizione Comportamentale.pdf#page=25|25]]
+
+```vhdl
+FOR identifier IN range LOOP
+  sequenza_di_istruzioni;
+END LOOP;
+```
+
+- Esegue la sequenza di istruzioni (loop body) un **numero assegnato di volte**.
+- `identifier` dichiara un oggetto che assume valori consecutivi nel range: dentro il loop è trattato come una **costante** (si legge ma non si assegna) e **non esiste fuori** dal `FOR … LOOP`.
+- XOR generica a N bit descritta in modo comportamentale:
+
+```vhdl
+ENTITY XOR_N IS
+  GENERIC (N : INTEGER);
+  PORT (
+    x : IN std_logic_vector(N-1 DOWNTO 0);
+    y : OUT std_logic);
+END XOR_N ;
+--
+ARCHITECTURE behavioral OF Function_3 IS
+BEGIN
+  PROCESS (x)
+    VARIABLE cnt : INTEGER;
+  BEGIN
+    cnt := 0;
+    FOR i IN 0 to N-1 LOOP
+      IF (x(i) = 1) THEN
+        cnt := cnt + 1;
+      END IF;
+    END LOOP;
+    CASE (cnt MOD 2) IS
+      WHEN 0 => y <= 0 ;
+      WHEN 1 => y <= 1 ;
+    END CASE;
+  END PROCESS;
+END behavioral;
+```
+
+> ⚠️ Contraddizione: l'architecture è dichiarata `OF Function_3` ma l'entity si chiama `XOR_N`; mancano gli apici (`x(i) = '1'`, `'0'`, `'1'`); il `CASE (cnt MOD 2)` su un `INTEGER` deve coprire tutti i valori interi, quindi serve `WHEN OTHERS` al posto di `WHEN 1`.
+
+#### While … Loop · [[5-Descrizione Comportamentale.pdf#page=26|p. 26]]
+
+```vhdl
+WHILE condition LOOP
+  sequenza_di_istruzioni;
+END LOOP;
+```
+
+- Esegue un insieme di istruzioni **finché** non si verifica una data condizione.
+- Sia per `FOR … LOOP` sia per `WHILE … LOOP` sono disponibili `EXIT` (esce dal loop: si salta all'istruzione dopo `END LOOP`) e `NEXT` (forza l'inizio di una nuova iterazione).
+
+### Assert · [[5-Descrizione Comportamentale.pdf#page=27|p. 27]]
+
+- Le istruzioni `ASSERT` si usano sia come statement **sequenziali** sia **concorrenti**.
+
+```vhdl
+ASSERT condition REPORT messagge SEVERITY severity_level;
+```
+
+- Il messaggio viene riportato dal simulatore quando si verifica `NOT(condition)`.
+- `severity_level` può essere `NOTE`, `WARNING`, `ERROR`, `FAILURE` e può fermare o meno la simulazione.
+
+*Approfondimenti nel wiki: [[descrizione-comportamentale]], [[process-vhdl]], [[wait-e-sensitivity-list]], [[variabili-e-segnali]], [[assegnazione-sequenziale]], [[istruzioni-sequenziali]], [[assert-vhdl]], [[porta-xor]]*

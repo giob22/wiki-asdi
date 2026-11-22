@@ -47,6 +47,15 @@ Si aggiorna a ogni ingest; i concetti si raggruppano per area del corso in grass
 - [[modello-tempificazione-vhdl]] — transazioni ed eventi (alta)
 - [[ritardi-inertial-transport]] — i due modelli di ritardo (alta)
 
+**Stili di descrizione: comportamentale**
+- [[descrizione-comportamentale]] — lo stile behavioral (alta)
+- [[process-vhdl]] — struttura e ciclo di vita del process (alta)
+- [[wait-e-sensitivity-list]] — attivazione e sospensione (alta)
+- [[variabili-e-segnali]] — tempificazione di `:=` e `<=` nei process (alta)
+- [[assegnazione-sequenziale]] — effetto alla sospensione, vale l'ultima (alta)
+- [[istruzioni-sequenziali]] — `IF`, `CASE`, `FOR`, `WHILE` (alta)
+- [[assert-vhdl]] — verifiche in simulazione (media)
+
 ## Entità
 
 - [[vhdl]] — il linguaggio: definizione, livelli di astrazione, VHDL e Verilog (standard)
@@ -58,6 +67,7 @@ Si aggiorna a ogni ingest; i concetti si raggruppano per area del corso in grass
 - [[porta-aoi]] — porta complessa AND-OR-INVERT (dispositivo)
 - [[rom]] — ROM 16×4 e ROM parametrica (dispositivo)
 - [[nibble-comparator]] — comparatore di nibble, DUT del testbench (dispositivo)
+- [[porta-xor]] — XOR a 2, 3 e N ingressi (dispositivo)
 
 ## Fonti
 
@@ -65,6 +75,7 @@ Si aggiorna a ogni ingest; i concetti si raggruppano per area del corso in grass
 - [[descrizione-dataflow-lezione]] — Lezione 2: VHDL, descrizione dataflow (12 pagine)
 - [[descrizione-strutturale-lezione]] — Lezione 3: VHDL, descrizione strutturale (31 pagine)
 - [[tecniche-di-simulazione-lezione]] — Lezione 4: tecniche di simulazione e ritardi (16 pagine)
+- [[descrizione-comportamentale-lezione]] — Lezione 5: VHDL, descrizione comportamentale (27 pagine)
 
 ## Esercizi
 

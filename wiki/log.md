@@ -16,3 +16,5 @@ Filtra ultimi 10: `grep "^## " wiki/log.md | tail -10`
 ## [2026-11-22] ingest | VHDL Strutturale (vhdl/3-Descrizione Strutturale.pdf) | pagine coperte: 1-31
 
 ## [2026-11-22] ingest | Tecniche di simulazione e ritardi (vhdl/4-Tecniche di simulazione e ritardi.pdf) | pagine coperte: 1-16
+
+## [2026-11-22] ingest | VHDL Comportamentale (vhdl/5-Descrizione Comportamentale.pdf) | pagine coperte: 1-27

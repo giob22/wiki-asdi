@@ -61,3 +61,7 @@ breve = "Descrizione strutturale: entity e architecture, port e modi, generics, 
 [[lezioni]]
 n = 4
 breve = "Come funziona il simulatore: tempo quantizzato contro simulazione ad eventi, delta cycle, transazioni ed eventi, ritardi inertial e transport."
+
+[[lezioni]]
+n = 5
+breve = "Descrizione comportamentale: process, sensitivity list e WAIT, variabili contro segnali, assegnazione sequenziale, IF, CASE, LOOP e ASSERT."

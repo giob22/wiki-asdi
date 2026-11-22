@@ -46,3 +46,12 @@ Check-list del programma: una riga per pagina del wiki, nell'ordine delle lezion
 | 4 | [[delta-cycle]] | [x] | [ ] | [ ] |
 | 4 | [[modello-tempificazione-vhdl]] | [x] | [ ] | [ ] |
 | 4 | [[ritardi-inertial-transport]] | [x] | [ ] | [ ] |
+| 5 | [[descrizione-comportamentale-lezione]] | [x] | [ ] | [ ] |
+| 5 | [[descrizione-comportamentale]] | [x] | [ ] | [ ] |
+| 5 | [[process-vhdl]] | [x] | [ ] | [ ] |
+| 5 | [[wait-e-sensitivity-list]] | [x] | [ ] | [ ] |
+| 5 | [[variabili-e-segnali]] | [x] | [ ] | [ ] |
+| 5 | [[assegnazione-sequenziale]] | [x] | [ ] | [ ] |
+| 5 | [[istruzioni-sequenziali]] | [x] | [ ] | [ ] |
+| 5 | [[assert-vhdl]] | [x] | [ ] | [ ] |
+| 5 | [[porta-xor]] | [x] | [ ] | [ ] |

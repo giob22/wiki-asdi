@@ -74,3 +74,17 @@ Esercizi collegati: [[...]]
 5. [[ritardi-inertial-transport]] — reti RC, filtraggio degli impulsi brevi, confronto in figura; default del VHDL ([[4-Tecniche di simulazione e ritardi.pdf#page=15|p. 15]]–[[4-Tecniche di simulazione e ritardi.pdf#page=16|16]]).
 
 ---
+
+## Lezione 5 — VHDL: descrizione comportamentale
+**PDF:** [[5-Descrizione Comportamentale.pdf]] (pp. 1–27) · **Fonte:** [[descrizione-comportamentale-lezione]]
+
+1. [[descrizione-comportamentale]] — stile behavioral, process come statement concorrente, equivalenza con le assegnazioni concorrenti ([[5-Descrizione Comportamentale.pdf#page=1|p. 1]]–[[5-Descrizione Comportamentale.pdf#page=2|2]], [[5-Descrizione Comportamentale.pdf#page=15|p. 15]]).
+2. [[process-vhdl]] — struttura, process body, inizializzazione, visibilità e comunicazione ([[5-Descrizione Comportamentale.pdf#page=2|p. 2]]–[[5-Descrizione Comportamentale.pdf#page=5|5]], [[5-Descrizione Comportamentale.pdf#page=10|p. 10]]).
+3. [[wait-e-sensitivity-list]] — due template alternativi, forme del `WAIT`, equivalenza con `WAIT ON` ([[5-Descrizione Comportamentale.pdf#page=6|p. 6]]–[[5-Descrizione Comportamentale.pdf#page=9|9]]).
+4. [[variabili-e-segnali]] — `:=` immediata contro `<=` schedulata, esempi `s_temp`/`v_temp`, `tmp`, `x_sig` ([[5-Descrizione Comportamentale.pdf#page=11|p. 11]]–[[5-Descrizione Comportamentale.pdf#page=14|14]], [[5-Descrizione Comportamentale.pdf#page=19|p. 19]]).
+5. [[assegnazione-sequenziale]] — effetto alla sospensione, vale l'ultima, riattivazione, tempi delle assegnazioni ([[5-Descrizione Comportamentale.pdf#page=15|p. 15]]–[[5-Descrizione Comportamentale.pdf#page=18|18]]).
+6. [[istruzioni-sequenziali]] — `IF`, `CASE`, `FOR`, `WHILE`, `EXIT`/`NEXT` ([[5-Descrizione Comportamentale.pdf#page=20|p. 20]]–[[5-Descrizione Comportamentale.pdf#page=26|26]]).
+7. [[porta-xor]] — XOR a 3 ingressi con `CASE`, XOR a N bit con `FOR LOOP` ([[5-Descrizione Comportamentale.pdf#page=23|p. 23]], [[5-Descrizione Comportamentale.pdf#page=25|p. 25]]).
+8. [[assert-vhdl]] — `ASSERT … REPORT … SEVERITY` ([[5-Descrizione Comportamentale.pdf#page=27|p. 27]]).
+
+---
