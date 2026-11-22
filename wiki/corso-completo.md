@@ -11,6 +11,7 @@ Testo unico di studio del corso (LM Ingegneria Informatica, UNINA, a.a. 2026-27,
 | 1 | [[#Lezione 1 — VHDL: principali elementi sintattici\|VHDL: principali elementi sintattici]] | 1-Principali elementi sintattici VHDL.pdf |
 | 2 | [[#Lezione 2 — VHDL: descrizione Dataflow\|VHDL: descrizione Dataflow]] | 2-Descrizione Dataflow.pdf |
 | 3 | [[#Lezione 3 — VHDL: descrizione strutturale\|VHDL: descrizione strutturale]] | 3-Descrizione Strutturale.pdf |
+| 4 | [[#Lezione 4 — VHDL: tecniche di simulazione e ritardi\|VHDL: tecniche di simulazione e ritardi]] | 4-Tecniche di simulazione e ritardi.pdf |
 
 <!-- Ogni lezione è una sezione «## Lezione N — titolo» (trattino lungo): diventa la pagina lezione-N.html del sito.
 
@@ -1188,3 +1189,172 @@ END input_output;
 > ⚠️ Contraddizione: il testo della slide indica gli istanti come «5 ns, 15 ns, 50 ns, 60 ns» e i pattern «ogni 10 ns», mentre tabella e codice usano 500, 1500, 5000, 6000 ns con pattern ogni 500–1000 ns; qui si seguono la tabella e il codice.
 
 *Approfondimenti nel wiki: [[descrizione-strutturale]], [[entity-architecture]], [[port-vhdl]], [[generics-vhdl]], [[component-binding]], [[istanziazione-componenti]], [[generate-vhdl]], [[testbench]], [[assegnazione-concorrente]], [[porta-aoi]], [[rom]], [[nibble-comparator]]*
+
+## Lezione 4 — VHDL: tecniche di simulazione e ritardi
+
+*Fonte: 4-Tecniche di simulazione e ritardi.pdf, 16 pagine (slide «Tecniche di simulazione»).*
+
+### Tecniche di simulazione dell'hardware · [[4-Tecniche di simulazione e ritardi.pdf#page=1|p. 1]]
+
+- La simulazione dell'hardware è **imprescindibile** nel ciclo di sviluppo dei sistemi digitali; per circuiti complessi deve essere **efficiente**.
+- **Simulazione a tempo quantizzato**: il tempo procede per incrementi di ampiezza **prefissata** (passo di quantizzazione); è incapace di adattarsi alla dinamica del sistema.
+- **Simulazione ad eventi**: il tempo procede per incrementi di ampiezza **variabile** (si calcola la propagazione solo quando un nodo varia); permette di seguire la dinamica del sistema.
+- Ottimizzazioni: determinazione dello **scope** di una variazione (per entrambe le tecniche); passo di quantizzazione variabile per le tecniche a tempo quantizzato (ad es. Spice).
+
+### Simulazione a tempo quantizzato · [[4-Tecniche di simulazione e ritardi.pdf#page=2|p. 2]]–[[4-Tecniche di simulazione e ritardi.pdf#page=4|4]]
+
+Esempio nel caso **0-delay** (si considera solo il comportamento, non la tempificazione del circuito):
+
+![[vhdl-4-p2-circuito-netlist.png]]
+*Il circuito dell'esempio: buffer d'ingresso 1 (a) e 2 (b), invertitori 3 e 4, AND 5 e 6, OR 7 con uscita z.*
+
+| Gate | Function | Input1 | Input2 | Output Value |
+|---|---|---|---|---|
+| 1 | Buffer | A | - | 0 |
+| 2 | Buffer | B | - | 0 |
+| 3 | Not | 2 | - | 1 |
+| 4 | Not | 1 | - | 1 |
+| 5 | And | 3 | 1 | 0 |
+| 6 | And | 4 | 2 | 0 |
+| 7 | Or | 5 | 6 | 0 |
+
+- Lo **stato del circuito** è la tensione a ogni nodo.
+- Il **circuito** è una **netlist in forma tabulare**: gli ingressi delle gate sono gli identificativi delle porte che le pilotano; lo stato è un'altra colonna (output value); l'ordine delle righe è un modo di ispezionare il grafo del circuito che rispetta la dipendenza funzionale delle porte.
+- Il simulatore si attiva a intervalli fissi $T_{SAMPLE}$ e aggiorna lo stato (i valori della tabella): campiona gli ingressi e calcola il potenziale di ogni nodo secondo le gate e le loro interconnessioni, ispezionando la tabella.
+
+![[vhdl-4-p3-ingressi-campionati.png]]
+*Gli ingressi dell'esempio: `a` sale a t = 2 e scende a t = 6, `b` sale a t = 5.*
+
+| Gate | Function | Input1 | Input2 | T = 0 | T = 2 | T = 5 |
+|---|---|---|---|---|---|---|
+| 1 | Buffer | A | - | 0 | 1 | 1 |
+| 2 | Buffer | B | - | 0 | 0 | 1 |
+| 3 | Not | 2 | - | 1 | 1 | 0 |
+| 4 | Not | 1 | - | 1 | 0 | 0 |
+| 5 | And | 3 | 1 | 0 | 1 | 0 |
+| 6 | And | 4 | 2 | 0 | 0 | 0 |
+| 7 | Or | 5 | 6 | 0 | 1 | 0 |
+
+- **Principio**: il tempo procede per incrementi di ampiezza prefissata.
+- **Vantaggi**: (abbastanza) semplice da implementare senza ritardi (simulazione puramente funzionale); può simulare anche variazioni continue (discretizzate) dei potenziali (ad es. Spice).
+- **Svantaggi**: incapace di adattarsi alla dinamica del sistema; difficile gestire i tempi di propagazione delle porte; il passo dovrebbe essere minore delle costanti di tempo del circuito, quindi cresce l'onere computazionale.
+- **Ottimizzazioni**: scope della variazione del potenziale di un nodo; passo variabile, che si adatta all'evoluzione del circuito.
+
+### Simulazione ad eventi · [[4-Tecniche di simulazione e ritardi.pdf#page=5|p. 5]]–[[4-Tecniche di simulazione e ritardi.pdf#page=7|7]]
+
+- **Principio**: il circuito si valuta solo quando si verifica un **evento**, cioè un cambiamento del potenziale di un nodo; senza eventi la rete non evolve ed è stabile.
+- **Vantaggi**: simulazione veloce dei circuiti digitali; i simulatori VHDL sono **ad eventi** (event driven).
+- **Svantaggi**: più difficile da implementare.
+- Esempio: tutte le porte hanno lo stesso ritardo (12 ns); le variazioni di un nodo si propagano lungo il circuito. La commutazione di `a` 1→0 a 0 ns provoca, tramite la NOT `g1`, una commutazione di `w` 0→1 a 12 ns, che provoca una commutazione 0→1 a 24 ns su `y`, …
+
+![[vhdl-4-p6-simulazione-ad-eventi.png]]
+*In alto il circuito (g1 NOT, g2 e g3 AND, g4 OR), al centro le forme d'onda ai nodi con le frecce di causa-effetto, in basso gli intervalli in cui ciascuna porta «reagisce».*
+
+- La rappresentazione del circuito per la simulazione ad eventi si basa su una **linked list**.
+
+![[vhdl-4-p7-linked-list.png]]
+*Ogni gate è un elemento della lista con i campi In1, In2 (puntatori alle gate che la pilotano), Fnc (funzione: Inp, NOT, AND, OR) e Out (valore d'uscita).*
+
+### Delta cycle · [[4-Tecniche di simulazione e ritardi.pdf#page=8|p. 8]]–[[4-Tecniche di simulazione e ritardi.pdf#page=10|10]]
+
+- Un'assegnazione senza ritardo ha ritardo 0: `w <= NOT a;` equivale a `w <= NOT a AFTER 0ns;`.
+- La transazione è schedulata per lo stesso istante dell'assegnazione, ma il simulatore la esegue nel **ciclo di simulazione successivo**, il **delta cycle** successivo.
+- Il tempo di simulazione ha la forma $x_1 T + x_2 \delta$, dove $T$ è un tempo (ns, ms, s) e $\delta$ (delta) è un ciclo di simulazione che **non corrisponde a tempo reale**: una transazione con tempo zero scade un delta dopo essere stata posta sul segnale.
+- Il delta serve solo per lo scheduling: un miliardo di delta non fanno un femtosecondo.
+
+**Esempio di assegnazioni senza ritardo:**
+
+```vhdl
+ARCHITECTURE concurrent OF es_delta IS
+  SIGNAL a, b, c : BIT := '0';
+BEGIN
+  a <= '1';
+  b <= NOT a;
+  c <= NOT b;
+END concurrent;
+```
+
+- Inizializzazione: tutti i segnali a 0.
+- All'inizio il circuito si valuta e si schedulano `a: 0→1`, `b: 0→1`, `c: 0→1` al tempo $0\,\text{ns} + 1\delta$.
+- Si rivaluta e si schedulano `b: 1→0`, `c: 1→0` a $0\,\text{ns} + 2\delta$.
+- Si rivaluta e si schedula `c: 0→1` a $0\,\text{ns} + 3\delta$.
+- La simulazione termina perché non ci sono più eventi; il tempo resta fermo a 0 ns.
+
+| ps | delta | a | b | c |
+|---|---|---|---|---|
+| 0 | +0 | 0 | 0 | 0 |
+| 0 | +1 | 1 | 1 | 1 |
+| 0 | +2 | 1 | 0 | 0 |
+| 0 | +3 | 1 | 0 | 1 |
+
+![[vhdl-4-p9-delta-cycles.png]]
+*Le transazioni nei delta 1δ, 2δ, 3δ, tutte al tempo 0 ns.*
+
+**Un «paradosso»:**
+
+```vhdl
+ARCHITECTURE concurrent OF timing_demo IS
+  SIGNAL x, y : BIT := '0';
+BEGIN
+  x <= y;
+  y <= NOT x;
+END concurrent;
+```
+
+- `x` e `y` **oscillano indefinitamente** (si generano continuamente eventi) senza che il tempo reale della simulazione avanzi.
+
+### Il modello di tempificazione VHDL · [[4-Tecniche di simulazione e ritardi.pdf#page=11|p. 11]]–[[4-Tecniche di simulazione e ritardi.pdf#page=14|14]]
+
+- Il VHDL rappresenta oggetti (moduli, assegnazioni di segnali, process, …) che evolvono **contemporaneamente** (concorrentemente): l'ordine con cui si scrivono assegnazioni e istanziazioni è del tutto indifferente.
+
+```vhdl
+ENTITY example IS
+  PORT (a, b, c : IN BIT ; z : OUT BIT);
+END example;
+--
+ARCHITECTURE concurrent OF example IS
+  SIGNAL w, x, y : BIT;
+BEGIN
+  w <= NOT a AFTER 12 NS;
+  x <= a AND b AFTER 12 NS;
+  y <= c AND w AFTER 12 NS;
+  z <= x OR y AFTER 12 NS;
+END concurrent;
+```
+
+- Un'assegnazione aggiunge una **transazione** sul segnale target (ad es. `x <= a AND b AFTER 12 NS;`, `w <= NOT a;`).
+- Una transazione è una coppia **(value, time)**: `value` è il valore che verrà assegnato, calcolato nell'istante in cui si genera la transazione; `time` dice dopo quanto tempo il valore sarà assegnato.
+- Un'assegnazione non sempre cambia il valore del segnale: si parla di **evento** quando lo cambia, altrimenti di semplice **transazione**.
+- Esempio: se `a` passa da 1 a 0 a 0 s, `w <= NOT a AFTER 12 NS;` genera la transazione **(1, 12 ns)**; 12 ns dopo l'istante 0 su `w` avviene l'evento 0→1.
+- Con la descrizione data-flow di sopra e una commutazione di `a` 1→0 a 0 (con `b` sempre alto), la tempificazione dei segnali è:
+
+![[vhdl-4-p14-forme-d-onda.png]]
+*`w` e `x` commutano a 12 ns, `y` e `z` a 24 ns, `z` di nuovo a 36 ns.*
+
+### Ritardi inertial e transport · [[4-Tecniche di simulazione e ritardi.pdf#page=15|p. 15]]–[[4-Tecniche di simulazione e ritardi.pdf#page=16|16]]
+
+- Per i parametri parassiti, le interconnessioni dei circuiti reali si possono schematizzare come **reti RC**, che filtrano gli impulsi troppo brevi rispetto alla costante di tempo RC.
+
+![[vhdl-4-p15-rete-rc.png]]
+*Una rete RC: modello di un'interconnessione.*
+
+- In VHDL questo si modella con i ritardi **inerziali** (inertial delays): ritardano ma **non propagano tutti gli impulsi** (0→1→0, 1→0→1), solo quelli che durano più di una soglia. Definiscono sia il **ritardo di propagazione** sia la **minima durata** di un segnale sotto la quale il segnale non si propaga.
+- I ritardi **transport** propagano **sempre** le transazioni, indipendentemente dalla distanza temporale fra due transazioni successive.
+- Tipicamente i ritardi inertial sono poco usati in VHDL; un ritardo senza la parola chiave `INERTIAL` è di tipo `TRANSPORT`.
+
+> ⚠️ Contraddizione: per lo standard VHDL (IEEE 1076) vale il contrario: un'assegnazione con `AFTER` e senza parola chiave usa il ritardo **inerziale**; `TRANSPORT` va scritto esplicitamente. `x <= a AFTER 5 NS;` equivale quindi a `x <= INERTIAL a AFTER 5 NS;`.
+
+```vhdl
+ARCHITECTURE delay OF example IS
+  SIGNAL target1, target2, waveform : BIT;
+BEGIN
+  waveform <=                                  -- forma d onda in figura
+  target1 <= INERTIAL waveform AFTER 5 NS;     -- inertial delay
+  target2 <= TRANSPORT waveform AFTER 5 NS;    -- transport delay
+END delay;
+```
+
+![[vhdl-4-p16-inertial-transport.png]]
+*`waveform` ha impulsi più lunghi (>5) e più corti (<5) di 5 ns. `target2` (transport) li riproduce tutti con 5 ns di ritardo; `target1` (inertial) scarta quelli più corti di 5 ns. La riga «Difference» evidenzia gli intervalli in cui i due segnali differiscono.*
+
+*Approfondimenti nel wiki: [[simulazione-tempo-quantizzato]], [[simulazione-ad-eventi]], [[delta-cycle]], [[modello-tempificazione-vhdl]], [[ritardi-inertial-transport]], [[assegnazione-concorrente]]*

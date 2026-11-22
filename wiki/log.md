@@ -14,3 +14,5 @@ Filtra ultimi 10: `grep "^## " wiki/log.md | tail -10`
 ## [2026-11-22] ingest | VHDL Dataflow (vhdl/2-Descrizione Dataflow.pdf) | pagine coperte: 1-12
 
 ## [2026-11-22] ingest | VHDL Strutturale (vhdl/3-Descrizione Strutturale.pdf) | pagine coperte: 1-31
+
+## [2026-11-22] ingest | Tecniche di simulazione e ritardi (vhdl/4-Tecniche di simulazione e ritardi.pdf) | pagine coperte: 1-16

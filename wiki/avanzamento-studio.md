@@ -40,3 +40,9 @@ Check-list del programma: una riga per pagina del wiki, nell'ordine delle lezion
 | 3 | [[porta-aoi]] | [x] | [ ] | [ ] |
 | 3 | [[rom]] | [x] | [ ] | [ ] |
 | 3 | [[nibble-comparator]] | [x] | [ ] | [ ] |
+| 4 | [[tecniche-di-simulazione-lezione]] | [x] | [ ] | [ ] |
+| 4 | [[simulazione-tempo-quantizzato]] | [x] | [ ] | [ ] |
+| 4 | [[simulazione-ad-eventi]] | [x] | [ ] | [ ] |
+| 4 | [[delta-cycle]] | [x] | [ ] | [ ] |
+| 4 | [[modello-tempificazione-vhdl]] | [x] | [ ] | [ ] |
+| 4 | [[ritardi-inertial-transport]] | [x] | [ ] | [ ] |

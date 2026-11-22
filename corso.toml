@@ -57,3 +57,7 @@ breve = "Descrizione dataflow: espressioni e operatori, assegnazioni concorrenti
 [[lezioni]]
 n = 3
 breve = "Descrizione strutturale: entity e architecture, port e modi, generics, component e binding, istanziazione con PORT MAP, GENERATE e testbench."
+
+[[lezioni]]
+n = 4
+breve = "Come funziona il simulatore: tempo quantizzato contro simulazione ad eventi, delta cycle, transazioni ed eventi, ritardi inertial e transport."

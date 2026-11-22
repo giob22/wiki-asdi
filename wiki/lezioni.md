@@ -63,3 +63,14 @@ Esercizi collegati: [[...]]
 10. [[nibble-comparator]], [[testbench]] — testbench del nibble comparator, stimoli, tabella delle uscite ([[3-Descrizione Strutturale.pdf#page=27|p. 27]]–[[3-Descrizione Strutturale.pdf#page=31|31]]).
 
 ---
+
+## Lezione 4 — VHDL: tecniche di simulazione e ritardi
+**PDF:** [[4-Tecniche di simulazione e ritardi.pdf]] (pp. 1–16) · **Fonte:** [[tecniche-di-simulazione-lezione]]
+
+1. [[simulazione-tempo-quantizzato]] — passo fisso, netlist tabulare, esempio 0-delay (XOR), pro e contro ([[4-Tecniche di simulazione e ritardi.pdf#page=1|p. 1]]–[[4-Tecniche di simulazione e ritardi.pdf#page=4|4]]).
+2. [[simulazione-ad-eventi]] — valutazione sugli eventi, propagazione con ritardi di 12 ns, linked list ([[4-Tecniche di simulazione e ritardi.pdf#page=5|p. 5]]–[[4-Tecniche di simulazione e ritardi.pdf#page=7|7]]).
+3. [[delta-cycle]] — ritardo nullo, tempo $x_1T + x_2\delta$, esempio a tre segnali, oscillazione a tempo fermo ([[4-Tecniche di simulazione e ritardi.pdf#page=8|p. 8]]–[[4-Tecniche di simulazione e ritardi.pdf#page=10|10]]).
+4. [[modello-tempificazione-vhdl]] — transazione (value, time), evento, catena di transazioni della porta complessa ([[4-Tecniche di simulazione e ritardi.pdf#page=11|p. 11]]–[[4-Tecniche di simulazione e ritardi.pdf#page=14|14]]).
+5. [[ritardi-inertial-transport]] — reti RC, filtraggio degli impulsi brevi, confronto in figura; default del VHDL ([[4-Tecniche di simulazione e ritardi.pdf#page=15|p. 15]]–[[4-Tecniche di simulazione e ritardi.pdf#page=16|16]]).
+
+---

@@ -40,6 +40,13 @@ Si aggiorna a ogni ingest; i concetti si raggruppano per area del corso in grass
 - [[generate-vhdl]] — istanze ripetute con `FOR`/`IF GENERATE` (alta)
 - [[testbench]] — verifica in simulazione, stimoli, worst/best case (alta)
 
+**Simulazione e tempificazione**
+- [[simulazione-tempo-quantizzato]] — passo fisso e netlist tabulare (media)
+- [[simulazione-ad-eventi]] — simulatori event driven (alta)
+- [[delta-cycle]] — ritardo nullo e cicli di simulazione (alta)
+- [[modello-tempificazione-vhdl]] — transazioni ed eventi (alta)
+- [[ritardi-inertial-transport]] — i due modelli di ritardo (alta)
+
 ## Entità
 
 - [[vhdl]] — il linguaggio: definizione, livelli di astrazione, VHDL e Verilog (standard)
@@ -57,6 +64,7 @@ Si aggiorna a ogni ingest; i concetti si raggruppano per area del corso in grass
 - [[elementi-sintattici-vhdl-lezione]] — Lezione 1: VHDL, principali elementi sintattici (39 pagine)
 - [[descrizione-dataflow-lezione]] — Lezione 2: VHDL, descrizione dataflow (12 pagine)
 - [[descrizione-strutturale-lezione]] — Lezione 3: VHDL, descrizione strutturale (31 pagine)
+- [[tecniche-di-simulazione-lezione]] — Lezione 4: tecniche di simulazione e ritardi (16 pagine)
 
 ## Esercizi
 
