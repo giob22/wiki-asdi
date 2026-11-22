@@ -1,0 +1,10 @@
+{
+  "showInlineTitle": true,
+  "readableLineLength": false,
+  "showUnsupportedFiles": true,
+  "alwaysUpdateLinks": true,
+  "defaultViewMode": "preview",
+  "userIgnoreFilters": [
+    "_site/"
+  ]
+}

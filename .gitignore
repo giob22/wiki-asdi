@@ -1,0 +1,15 @@
+# Obsidian: stato dell'interfaccia, diverso su ogni computer
+.obsidian/workspace
+.obsidian/workspace.json
+.obsidian/workspace-*.json
+.trash/
+.DS_Store
+
+# Sito generato in locale (su GitHub lo costruisce il workflow)
+_site/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
