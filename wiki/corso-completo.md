@@ -9,6 +9,7 @@ Testo unico di studio del corso (LM Ingegneria Informatica, UNINA, a.a. 2026-27,
 | # | Lezione | PDF sorgente |
 |---|---|---|
 | 1 | [[#Lezione 1 — VHDL: principali elementi sintattici\|VHDL: principali elementi sintattici]] | 1-Principali elementi sintattici VHDL.pdf |
+| 2 | [[#Lezione 2 — VHDL: descrizione Dataflow\|VHDL: descrizione Dataflow]] | 2-Descrizione Dataflow.pdf |
 
 <!-- Ogni lezione è una sezione «## Lezione N — titolo» (trattino lungo): diventa la pagina lezione-N.html del sito.
 
@@ -574,3 +575,164 @@ Y := (A AND (B XNOR C)) NOR D;
 ```
 
 *Approfondimenti nel wiki: [[elementi-lessicali-vhdl]], [[oggetti-vhdl]], [[tipi-vhdl]], [[std-logic]], [[signed-unsigned]], [[array-vhdl]], [[record-vhdl]], [[alias-vhdl]], [[subtype-vhdl]], [[attributi-vhdl]], [[operatori-vhdl]]*
+
+## Lezione 2 — VHDL: descrizione Dataflow
+
+*Fonte: 2-Descrizione Dataflow.pdf, 12 pagine (slide «VHDL Dataflow», v1.2).*
+
+### Roadmap · [[2-Descrizione Dataflow.pdf#page=1|p. 1]]
+
+Come si descrive in VHDL la struttura di un sistema digitale con una descrizione di tipo **data-flow**: espressioni e operatori, assegnazione concorrente, assegnazione condizionata, assegnazione selezionata, esempi.
+
+> ⚠️ Contraddizione: nell'outline della slide «assegnazione concorrente» compare due volte; la quarta voce è l'assegnazione selezionata.
+
+### Espressioni e operatori · [[2-Descrizione Dataflow.pdf#page=2|p. 2]]–[[2-Descrizione Dataflow.pdf#page=3|3]]
+
+- A un segnale, a una variabile o a una costante si può associare il risultato di un'**espressione** che coinvolge altri valori; **non si possono mischiare segnali e variabili**.
+- Un'espressione combina operandi (valori di segnali, costanti, variabili) tramite operatori, come negli altri linguaggi di programmazione.
+- Operatori predefiniti in ordine di priorità decrescente (le parentesi cambiano l'ordine di valutazione):
+
+| Priorità | Operatori |
+|---|---|
+| più alta | `**` `abs` `not` |
+| | `*` `/` `mod` `rem` |
+| | `+` `-` (segno) |
+| | `+` `-` `&` |
+| | `=` `/=` `<` `<=` `>` `>=` |
+| più bassa | `and` `or` `nand` `nor` `xor` |
+
+- **Relazionali** (`=`, `/=` diverso, `<`, `<=`, `>`, `>=`): si applicano a elementi dello **stesso tipo** e producono un `boolean`.
+- **Aritmetici** (`**` elevamento a potenza, `abs`, `*`, `/`, `mod`, `rem` resto, `+`, `-`): solo sui tipi numerici (integer, floating point, physical); danno un valore dello stesso tipo (oppure overflow e underflow).
+- **Logici** (`and`, `or`, `nand`, `nor`, `xor`, `not`): su `bit`, `std_logic` e `boolean`, ma anche su `bit_vector` e `std_logic_vector` (**word gate**).
+- `&` concatena più oggetti ottenendo un array.
+- L'utente può definire nuovi operatori e fare **overloading** di quelli esistenti.
+
+### Assegnazione concorrente · [[2-Descrizione Dataflow.pdf#page=4|p. 4]]–[[2-Descrizione Dataflow.pdf#page=5|5]]
+
+- Le assegnazioni di segnale **concorrenti** stanno nel corpo di un'`architecture`; quelle nel corpo di un `process` si chiamano **sequenziali**.
+- Un'assegnazione concorrente si **attiva ogni volta che varia uno dei segnali da cui dipende** il segnale assegnato:
+
+```vhdl
+S <= NOT ((A XOR B) AND C);
+```
+
+- Nel corpo di un'architecture sono **concorrenti fra loro**: tutte le assegnazioni di segnale (incondizionate, condizionate, selezionate), tutte le istanziazioni di blocchi, tutti i process.
+- Il **target** di un'assegnazione può essere un segnale semplice, un segnale indicizzato (`a(5)`), una slice (`a(5 downto 0)`) o un segnale aggregato (`a(5) & a(2)`). Il simbolo di assegnazione fra segnali è `<=`.
+
+```vhdl
+S <= A XOR B;
+S(0) <= A(0) XOR B(0);
+S(3 downto 0) <= A(3 downto 0) XOR B(3 downto 0);
+S(1) & S(0) <= A(1 downto 0) XOR B(1 downto 0);
+```
+
+> ⚠️ Contraddizione: la concatenazione `S(1) & S(0)` non può fare da target; un target aggregato si scrive come aggregato: `(S(1), S(0)) <= A(1 downto 0) XOR B(1 downto 0);`.
+
+- Tre tipi di assegnazioni concorrenti fra segnali:
+  1. **incondizionata**: la waveform assegnata al segnale è fissa;
+  2. **condizionata**: la waveform è scelta con un costrutto if-then-else;
+  3. **selezionata**: la waveform è scelta con un costrutto di tipo case.
+
+### Assegnazione incondizionata · [[2-Descrizione Dataflow.pdf#page=6|p. 6]]
+
+Un'espressione che coinvolge diverse forme d'onda è semplicemente assegnata a un segnale. Esempio, un half adder:
+
+```vhdl
+ARCHITECTURE dataflow OF HalfAdder IS
+BEGIN
+  Sum   <= A XOR B;
+  Carry <= A AND B;
+END ARCHITECTURE dataflow;
+```
+
+### Assegnazione condizionata · [[2-Descrizione Dataflow.pdf#page=7|p. 7]]–[[2-Descrizione Dataflow.pdf#page=9|9]]
+
+```vhdl
+segnale <= waveform_1 WHEN condizione_1 ELSE
+           waveform_2 WHEN condizione_2 ELSE
+           ...
+           waveform_(n-1) WHEN condizione_(n-2) ELSE
+           waveform_n;
+```
+
+- Sceglie la waveform da assegnare al segnale target (fra `waveform_1` … `waveform_n`) a seconda di quale condizione booleana è verificata.
+- Le condizioni possono **sovrapporsi**: in tal caso l'**ordine di valutazione** (dalla prima fino all'`ELSE` finale) è decisivo.
+- Deve terminare con un `ELSE` senza condizione.
+
+> ⚠️ Contraddizione: con `n` waveform le condizioni sono `n-1`, quindi l'ultima è `condizione_(n-1)`, non `condizione_(n-2)`.
+
+**Buffer tristate** con segnale di abilitazione `Enable`: quando `Enable` è alto `BufOut` prende `BufIn`, altrimenti il valore tristate `'Z'`.
+
+```vhdl
+ARCHITECTURE dataflow OF TriStateBuffer IS
+BEGIN
+  BufOut <= BufIn WHEN Enable = '1
+            ELSE 'Z';
+END ARCHITECTURE dataflow;
+```
+
+> ⚠️ Contraddizione: nella slide manca l'apice di chiusura: la condizione è `Enable = '1'`.
+
+**Multiplexer 2 a 1 su un bit con abilitazione tristate**: è un mux con ingresso di selezione `sel`, la cui uscita è l'ingresso di una tristate controllata da `en`; l'esempio contiene anche i ritardi di propagazione `Tpd`.
+
+```vhdl
+mux_out <= 'Z'  AFTER Tpd WHEN en = '0' ELSE
+           in_0 AFTER Tpd WHEN sel = '0' ELSE
+           in_1 AFTER Tpd;
+```
+
+- Un'assegnazione condizionata è un'**abbreviazione di un process** con assegnazioni di segnali sotto condizioni `IF … THEN`; `[sensitivity_list]` è l'insieme dei segnali da cui dipendono le clausole:
+
+```vhdl
+PROCESS
+  IF condition_1 THEN
+    segnale <= waveform_1;
+  ELSIF condition_2 THEN
+    segnale <= waveform_2;
+  ELSIF ...
+  ELSE
+    segnale <= waveform_n;
+  WAIT [sensitivity_list];
+END PROCESS;
+```
+
+> ⚠️ Contraddizione: nel process della slide manca `END IF;` prima del `WAIT`.
+
+### Assegnazione selezionata · [[2-Descrizione Dataflow.pdf#page=10|p. 10]]–[[2-Descrizione Dataflow.pdf#page=11|11]]
+
+```vhdl
+WITH segnale_di_selezione SELECT
+  segnale <= waveform_1 WHEN caso_1,
+             waveform_2 WHEN caso_2,
+             ...
+             waveform_n WHEN caso_n;
+```
+
+- Sceglie la waveform da assegnare al segnale target a seconda del **valore** (`caso_1` … `caso_n`) assunto dal segnale di selezione.
+- I casi devono essere **esaustivi** (a meno di usare un caso `OTHERS`) e **mutuamente esclusivi** (non possono sovrapporsi).
+- È un'abbreviazione di un process con le assegnazioni in un costrutto `CASE`; la sensitivity list del `WAIT` contiene tutti i segnali usati nelle forme d'onda e nell'espressione del segnale di selezione:
+
+```vhdl
+PROCESS
+  CASE segnale_di_selezione IS
+    WHEN caso_1 => s <= waveform_1;
+    WHEN caso_2 => s <= waveform_2;
+    ...
+    WHEN caso_n => s <= waveform_n;
+  END CASE;
+  WAIT [ sensitivity_list ];
+END PROCESS;
+```
+
+> ⚠️ Contraddizione: la slide scrive «una assegnazione condizionata è un'abbreviazione per un processo … CASE»: si tratta dell'assegnazione **selezionata**. Nel process equivalente il target `s` è il `segnale` dell'assegnazione.
+
+### Confronto fra assegnazioni · [[2-Descrizione Dataflow.pdf#page=12|p. 12]]
+
+| | Condizionata (`WHEN … ELSE`) | Selezionata (`WITH … SELECT`) |
+|---|---|---|
+| casi | non mutuamente esclusivi | mutuamente esclusivi |
+| valutazione | sequenziale: la prima condizione vera determina l'assegnazione | nessun ordine di scansione, confronti «in parallelo» |
+
+- Se tutti i casi di un'assegnazione condizionata sono mutuamente esclusivi, il costrutto è equivalente a un'assegnazione selezionata.
+
+*Approfondimenti nel wiki: [[descrizione-dataflow]], [[assegnazione-concorrente]], [[assegnazione-condizionata]], [[assegnazione-selezionata]], [[operatori-vhdl]], [[half-adder]], [[buffer-tristate]], [[multiplexer]]*

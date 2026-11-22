@@ -21,6 +21,17 @@ Classi di operatori in **ordine di priorità** (dalla più alta); le parentesi c
 | relazionali | `=` `/=` `<` `<=` `>` `>=` | confronti (`/=` è «diverso») |
 | logici | `and` `or` `nand` `nor` `xor` `xnor` | operazioni bit a bit |
 
+### Su quali tipi si applicano · [[2-Descrizione Dataflow.pdf#page=2|p. 2]]–[[2-Descrizione Dataflow.pdf#page=3|3]]
+
+- **relazionali**: a elementi dello **stesso tipo**; il risultato è un `boolean`;
+- **aritmetici** (`**`, `abs`, `*`, `/`, `mod`, `rem`, `+`, `-`): solo ai tipi numerici (integer, floating point, physical); il risultato è dello stesso tipo, oppure overflow/underflow;
+- **logici**: a `bit`, `std_logic`, `boolean` e anche a `bit_vector` e `std_logic_vector`, bit a bit (**word gate**);
+- `&`: concatena oggetti e produce un array;
+- l'utente può definire nuovi operatori e fare **overloading** di quelli esistenti;
+- in un'espressione non si mescolano segnali e variabili.
+
+La tabella delle priorità della Lezione 2 è la stessa di qui, senza la riga degli shift e senza `xnor`.
+
 ## Derivazioni
 
 ### Derivazione — esponenziazione, valore assoluto, prodotto, divisione, modulo · [[1-Principali elementi sintattici VHDL.pdf#page=34|p. 34]]–[[1-Principali elementi sintattici VHDL.pdf#page=35|35]]
@@ -108,8 +119,9 @@ Le espressioni con operatori logici sono il cuore della descrizione dataflow dei
 - [[attributi-vhdl]] — condizioni come `c = '0' AND NOT c'STABLE`
 - [[std-logic]] — gli operatori logici sono definiti anche per `std_logic`
 
-## Fonti · [[1-Principali elementi sintattici VHDL.pdf#page=33|p. 33]]–[[1-Principali elementi sintattici VHDL.pdf#page=39|39]]
+## Fonti · Sintassi [[1-Principali elementi sintattici VHDL.pdf#page=33|p. 33]]–[[1-Principali elementi sintattici VHDL.pdf#page=39|39]] · Dataflow [[2-Descrizione Dataflow.pdf#page=2|p. 2]]–[[2-Descrizione Dataflow.pdf#page=3|3]]
 
 - [[elementi-sintattici-vhdl-lezione]]
+- [[descrizione-dataflow-lezione]] — priorità, tipi degli operandi, word gate, overloading
 
-_Aggiornato: 2026-11-22 — creazione_
+_Aggiornato: 2026-11-22 — Lezione 2: tipi a cui si applicano gli operatori_

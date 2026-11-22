@@ -24,15 +24,25 @@ Si aggiorna a ogni ingest; i concetti si raggruppano per area del corso in grass
 - [[attributi-vhdl]] — attributi di tipi, array e segnali; eventi e transazioni (alta)
 - [[operatori-vhdl]] — classi di operatori, shift, confronti (media)
 
+**Stili di descrizione: dataflow**
+- [[descrizione-dataflow]] — lo stile dataflow e le sue assegnazioni (alta)
+- [[assegnazione-concorrente]] — attivazione, concorrenza, target (alta)
+- [[assegnazione-condizionata]] — `WHEN … ELSE` con priorità (alta)
+- [[assegnazione-selezionata]] — `WITH … SELECT`, casi esclusivi (alta)
+
 ## Entità
 
 - [[vhdl]] — il linguaggio: definizione, livelli di astrazione, VHDL e Verilog (standard)
 - [[ieee-std-logic-1164]] — package di `std_logic` (standard)
 - [[ieee-numeric-std]] — package di `signed`/`unsigned` e conversioni (standard)
+- [[half-adder]] — semisommatore in dataflow (dispositivo)
+- [[buffer-tristate]] — buffer con uscita in alta impedenza (dispositivo)
+- [[multiplexer]] — mux 2:1 con abilitazione tristate (dispositivo)
 
 ## Fonti
 
 - [[elementi-sintattici-vhdl-lezione]] — Lezione 1: VHDL, principali elementi sintattici (39 pagine)
+- [[descrizione-dataflow-lezione]] — Lezione 2: VHDL, descrizione dataflow (12 pagine)
 
 ## Esercizi
 

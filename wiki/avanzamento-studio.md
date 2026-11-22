@@ -20,3 +20,11 @@ Check-list del programma: una riga per pagina del wiki, nell'ordine delle lezion
 | 1 | [[vhdl]] | [x] | [ ] | [ ] |
 | 1 | [[ieee-std-logic-1164]] | [x] | [ ] | [ ] |
 | 1 | [[ieee-numeric-std]] | [x] | [ ] | [ ] |
+| 2 | [[descrizione-dataflow-lezione]] | [x] | [ ] | [ ] |
+| 2 | [[descrizione-dataflow]] | [x] | [ ] | [ ] |
+| 2 | [[assegnazione-concorrente]] | [x] | [ ] | [ ] |
+| 2 | [[assegnazione-condizionata]] | [x] | [ ] | [ ] |
+| 2 | [[assegnazione-selezionata]] | [x] | [ ] | [ ] |
+| 2 | [[half-adder]] | [x] | [ ] | [ ] |
+| 2 | [[buffer-tristate]] | [x] | [ ] | [ ] |
+| 2 | [[multiplexer]] | [x] | [ ] | [ ] |

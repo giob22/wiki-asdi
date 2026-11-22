@@ -34,3 +34,16 @@ Esercizi collegati: [[...]]
 12. [[vhdl]], [[ieee-std-logic-1164]], [[ieee-numeric-std]] — il linguaggio e i package IEEE ([[1-Principali elementi sintattici VHDL.pdf#page=9|p. 9]], [[1-Principali elementi sintattici VHDL.pdf#page=11|p. 11]]–[[1-Principali elementi sintattici VHDL.pdf#page=12|12]]).
 
 ---
+
+## Lezione 2 — VHDL: descrizione Dataflow
+**PDF:** [[2-Descrizione Dataflow.pdf]] (pp. 1–12) · **Fonte:** [[descrizione-dataflow-lezione]]
+
+1. [[descrizione-dataflow]] — lo stile dataflow, espressioni e operatori, le tre assegnazioni concorrenti ([[2-Descrizione Dataflow.pdf#page=1|p. 1]]–[[2-Descrizione Dataflow.pdf#page=3|3]]).
+2. [[operatori-vhdl]] — priorità, tipi degli operandi, word gate, overloading (aggiornata) ([[2-Descrizione Dataflow.pdf#page=2|p. 2]]–[[2-Descrizione Dataflow.pdf#page=3|3]]).
+3. [[assegnazione-concorrente]] — attivazione, concorrenza nell'architecture, target, tre tipi ([[2-Descrizione Dataflow.pdf#page=4|p. 4]]–[[2-Descrizione Dataflow.pdf#page=5|5]]).
+4. [[half-adder]] — assegnazione incondizionata ([[2-Descrizione Dataflow.pdf#page=6|p. 6]]).
+5. [[assegnazione-condizionata]] — `WHEN … ELSE`, priorità, process equivalente con `IF` ([[2-Descrizione Dataflow.pdf#page=7|p. 7]]–[[2-Descrizione Dataflow.pdf#page=9|9]]).
+6. [[buffer-tristate]], [[multiplexer]] — buffer tristate e mux 2:1 con abilitazione tristate e ritardi ([[2-Descrizione Dataflow.pdf#page=8|p. 8]]).
+7. [[assegnazione-selezionata]] — `WITH … SELECT`, casi esaustivi ed esclusivi, process equivalente con `CASE`, confronto ([[2-Descrizione Dataflow.pdf#page=10|p. 10]]–[[2-Descrizione Dataflow.pdf#page=12|12]]).
+
+---

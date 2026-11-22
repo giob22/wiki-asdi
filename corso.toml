@@ -49,3 +49,7 @@ note = []
 [[lezioni]]
 n = 1
 breve = "Il VHDL come linguaggio: regole lessicali, oggetti (costanti, variabili, segnali), tipi (std_logic, signed/unsigned, enumerazioni), array e record, alias, subtype, attributi e operatori."
+
+[[lezioni]]
+n = 2
+breve = "Descrizione dataflow: espressioni e operatori, assegnazioni concorrenti incondizionate, condizionate (WHEN … ELSE) e selezionate (WITH … SELECT), con i process equivalenti."
