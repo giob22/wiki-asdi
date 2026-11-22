@@ -45,3 +45,7 @@ note = []
 # lezione = 3
 # sezione = "Quantizzazione ottima: Lloyd-Max"   # inizio del titolo della sezione (senza i riferimenti ai PDF)
 # disegni = ["esempio"]
+
+[[lezioni]]
+n = 1
+breve = "Il VHDL come linguaggio: regole lessicali, oggetti (costanti, variabili, segnali), tipi (std_logic, signed/unsigned, enumerazioni), array e record, alias, subtype, attributi e operatori."

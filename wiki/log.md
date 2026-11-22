@@ -8,3 +8,5 @@ Filtra ultimi 10: `grep "^## " wiki/log.md | tail -10`
 
 
 ## [2026-11-22] setup | wiki inizializzato (moduli: Laboratorio, Avanzamento studio; PDF in raw/vhdl e raw/teoria; repo pubblica con GitHub Pages)
+
+## [2026-11-22] ingest | Il VHDL come linguaggio — principali elementi sintattici (vhdl/1-Principali elementi sintattici VHDL.pdf) | pagine coperte: 1-39

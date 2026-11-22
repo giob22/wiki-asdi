@@ -11,15 +11,28 @@ Si aggiorna a ogni ingest; i concetti si raggruppano per area del corso in grass
 
 ## Concetti
 
-_Nessuna pagina ancora._
+**Il VHDL come linguaggio**
+- [[elementi-lessicali-vhdl]] — regole lessicali, bit string, identificatori (bassa)
+- [[oggetti-vhdl]] — costanti, variabili, segnali (alta)
+- [[tipi-vhdl]] — tipizzazione forte, interi con range, enumerazioni (alta)
+- [[std-logic]] — `bit`, `std_logic` a 9 valori, `std_logic_vector` (alta)
+- [[signed-unsigned]] — tipi numerici di `numeric_std`, conversioni e casting (alta)
+- [[array-vhdl]] — array, slice, aggregati, ROM, tabelle di verità (alta)
+- [[record-vhdl]] — record, formato di un'istruzione (media)
+- [[alias-vhdl]] — alias (bassa)
+- [[subtype-vhdl]] — subtype e compatibilità con il tipo base (media)
+- [[attributi-vhdl]] — attributi di tipi, array e segnali; eventi e transazioni (alta)
+- [[operatori-vhdl]] — classi di operatori, shift, confronti (media)
 
 ## Entità
 
-_Nessuna pagina ancora._
+- [[vhdl]] — il linguaggio: definizione, livelli di astrazione, VHDL e Verilog (standard)
+- [[ieee-std-logic-1164]] — package di `std_logic` (standard)
+- [[ieee-numeric-std]] — package di `signed`/`unsigned` e conversioni (standard)
 
 ## Fonti
 
-_Nessuna fonte ingestita._
+- [[elementi-sintattici-vhdl-lezione]] — Lezione 1: VHDL, principali elementi sintattici (39 pagine)
 
 ## Esercizi
 
