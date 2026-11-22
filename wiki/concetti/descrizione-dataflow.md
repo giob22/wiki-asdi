@@ -7,7 +7,7 @@ fonti_pdf: ["2-Descrizione Dataflow.pdf#page=1", "2-Descrizione Dataflow.pdf#pag
 
 # Descrizione dataflow
 
-## Definizione · [[2-Descrizione Dataflow.pdf#page=1|p. 1]]–[[2-Descrizione Dataflow.pdf#page=3|3]]
+## Definizione · [[2-Descrizione Dataflow.pdf#page=1|p. 1]]–[[2-Descrizione Dataflow.pdf#page=3|3]] · [[2-Descrizione Dataflow.pdf#page=2|p. 2]]
 
 La **descrizione dataflow** è il livello di astrazione VHDL in cui un circuito è descritto assegnando a ogni segnale il valore di un'**espressione**: il circuito è visto come una combinazione di porte elementari, a cui corrispondono gli operatori del linguaggio (`and`, `or`, `xor`, …). Si usa tipicamente per i **circuiti combinatori**. I costrutti sono le tre **assegnazioni concorrenti** di segnale:
 
@@ -17,7 +17,7 @@ La **descrizione dataflow** è il livello di astrazione VHDL in cui un circuito 
 | condizionata | `s <= w1 WHEN c1 ELSE … ELSE wn;` | if-then-else, con priorità |
 | selezionata | `WITH sel SELECT s <= w1 WHEN caso1, …;` | case, casi esclusivi |
 
-**Espressioni** · [[2-Descrizione Dataflow.pdf#page=2|p. 2]]–[[2-Descrizione Dataflow.pdf#page=3|3]]: combinano operandi (segnali, costanti, variabili) con operatori; **non si mescolano segnali e variabili**. I relazionali vogliono operandi dello stesso tipo e danno un `boolean`; gli aritmetici valgono sui tipi numerici; i logici valgono anche su vettori, bit a bit (**word gate**); l'utente può definire operatori e farne l'overloading. Le priorità sono in [[operatori-vhdl]].
+**Espressioni**: combinano operandi (segnali, costanti, variabili) con operatori; **non si mescolano segnali e variabili**. I relazionali vogliono operandi dello stesso tipo e danno un `boolean`; gli aritmetici valgono sui tipi numerici; i logici valgono anche su vettori, bit a bit (**word gate**); l'utente può definire operatori e farne l'overloading. Le priorità sono in [[operatori-vhdl]].
 
 ## Derivazioni
 

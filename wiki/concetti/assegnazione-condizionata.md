@@ -7,7 +7,7 @@ fonti_pdf: ["2-Descrizione Dataflow.pdf#page=7", "2-Descrizione Dataflow.pdf#pag
 
 # Assegnazione condizionata (`WHEN … ELSE`)
 
-## Definizione · [[2-Descrizione Dataflow.pdf#page=7|p. 7]]
+## Definizione · [[2-Descrizione Dataflow.pdf#page=7|p. 7]] · [[2-Descrizione Dataflow.pdf#page=9|p. 9]]
 
 L'**assegnazione condizionata** è un'assegnazione concorrente che sceglie la waveform da assegnare al segnale target in base a quale **condizione booleana** è vera, come un if-then-else:
 
@@ -20,7 +20,7 @@ segnale <= waveform_1 WHEN condizione_1 ELSE
 
 - le condizioni **possono sovrapporsi**: conta l'**ordine** di valutazione, dalla prima all'`ELSE` finale; vince la prima condizione vera;
 - termina con un `ELSE` **senza condizione**;
-- è un'abbreviazione di un process con `IF … ELSIF … ELSE` seguito da `WAIT` sui segnali da cui dipendono le clausole · [[2-Descrizione Dataflow.pdf#page=9|p. 9]].
+- è un'abbreviazione di un process con `IF … ELSIF … ELSE` seguito da `WAIT` sui segnali da cui dipendono le clausole.
 
 ## Derivazioni
 
@@ -72,12 +72,12 @@ END PROCESS;
 
 La sensitivity list contiene i segnali delle **condizioni** (`en`, `sel`) e quelli delle **waveform** (`in_0`, `in_1`): se ne mancasse uno, una sua variazione non aggiornerebbe l'uscita.
 
-## Spiegazione
+## Spiegazione · [[2-Descrizione Dataflow.pdf#page=12|p. 12]]
 
 Il `WHEN … ELSE` è il costrutto concorrente con **priorità**: le condizioni si leggono in ordine e la prima vera decide. In hardware corrisponde a una catena di multiplexer, in cui la prima condizione comanda il mux più vicino all'uscita.
 > 🧩 Derivazione mia (corrispondenza con l'hardware): ogni `WHEN c ELSE` è un mux 2:1 che sceglie fra la sua waveform e il resto della catena.
 
-Quando le condizioni sono **mutuamente esclusive** la priorità non serve e il costrutto equivale a un'[[assegnazione-selezionata]] · [[2-Descrizione Dataflow.pdf#page=12|p. 12]].
+Quando le condizioni sono **mutuamente esclusive** la priorità non serve e il costrutto equivale a un'[[assegnazione-selezionata]].
 
 ## Perché importa
 

@@ -21,7 +21,7 @@ sig  <= "101";   -- sig  = -3
 sig1 <= "101";   -- sig1 = 5
 ```
 
-**Conversioni** · [[1-Principali elementi sintattici VHDL.pdf#page=12|p. 12]]:
+**Conversioni**:
 
 | Da → a | Come | Tipo di operazione |
 |---|---|---|
@@ -37,7 +37,7 @@ sig1 <= "101";   -- sig1 = 5
 ![[vhdl-1-p12-conversioni-tra-tipi.png]]
 *Le conversioni fra integer, signed, unsigned e std_logic_vector: funzioni a sinistra, type casting a destra.*
 
-**Tipi misti in somma e sottrazione** · [[1-Principali elementi sintattici VHDL.pdf#page=11|p. 11]]: `+` e `-` accettano `unsigned` con `unsigned`, `natural` o `std_logic` (risultato `unsigned`) e `signed` con `signed`, `integer` o `std_logic` (risultato `signed`), in entrambi gli ordini.
+**Tipi misti in somma e sottrazione**: `+` e `-` accettano `unsigned` con `unsigned`, `natural` o `std_logic` (risultato `unsigned`) e `signed` con `signed`, `integer` o `std_logic` (risultato `signed`), in entrambi gli ordini.
 
 ## Derivazioni
 

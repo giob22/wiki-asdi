@@ -7,7 +7,7 @@ fonti_pdf: ["2-Descrizione Dataflow.pdf#page=10", "2-Descrizione Dataflow.pdf#pa
 
 # Assegnazione selezionata (`WITH … SELECT`)
 
-## Definizione · [[2-Descrizione Dataflow.pdf#page=10|p. 10]]–[[2-Descrizione Dataflow.pdf#page=11|11]]
+## Definizione · [[2-Descrizione Dataflow.pdf#page=10|p. 10]]–[[2-Descrizione Dataflow.pdf#page=11|11]] · [[2-Descrizione Dataflow.pdf#page=12|p. 12]]
 
 L'**assegnazione selezionata** è un'assegnazione concorrente che sceglie la waveform in base al **valore** di un segnale di selezione, come un costrutto case:
 
@@ -23,7 +23,7 @@ WITH segnale_di_selezione SELECT
 - i casi devono essere **mutuamente esclusivi**;
 - è un'abbreviazione di un process con un `CASE` seguito da `WAIT` sui segnali delle waveform e dell'espressione di selezione.
 
-**Confronto con l'assegnazione condizionata** · [[2-Descrizione Dataflow.pdf#page=12|p. 12]]:
+**Confronto con l'assegnazione condizionata**:
 
 | | Condizionata | Selezionata |
 |---|---|---|

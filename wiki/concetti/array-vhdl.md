@@ -7,7 +7,7 @@ fonti_pdf: ["1-Principali elementi sintattici VHDL.pdf#page=14", "1-Principali e
 
 # Array in VHDL
 
-## Definizione · [[1-Principali elementi sintattici VHDL.pdf#page=14|p. 14]]–[[1-Principali elementi sintattici VHDL.pdf#page=15|15]]
+## Definizione · [[1-Principali elementi sintattici VHDL.pdf#page=14|p. 14]]–[[1-Principali elementi sintattici VHDL.pdf#page=15|15]] · [[1-Principali elementi sintattici VHDL.pdf#page=18|p. 18]]
 
 Un **array** è una collezione di elementi **dello stesso tipo**, indicizzati. Può essere:
 
@@ -26,7 +26,7 @@ Accesso:
 | `('1', 2 => '0', OTHERS => '1')` | aggregato misto; `others` copre gli elementi non nominati |
 | `x & y` | concatenazione |
 
-L'indice può essere di **qualsiasi tipo discreto**, anche un tipo enumerazione: `TYPE qit_2d IS ARRAY (qit, qit) OF qit;` · [[1-Principali elementi sintattici VHDL.pdf#page=18|p. 18]].
+L'indice può essere di **qualsiasi tipo discreto**, anche un tipo enumerazione: `TYPE qit_2d IS ARRAY (qit, qit) OF qit;`.
 
 ## Derivazioni
 

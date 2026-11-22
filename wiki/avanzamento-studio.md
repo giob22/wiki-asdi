@@ -28,3 +28,15 @@ Check-list del programma: una riga per pagina del wiki, nell'ordine delle lezion
 | 2 | [[half-adder]] | [x] | [ ] | [ ] |
 | 2 | [[buffer-tristate]] | [x] | [ ] | [ ] |
 | 2 | [[multiplexer]] | [x] | [ ] | [ ] |
+| 3 | [[descrizione-strutturale-lezione]] | [x] | [ ] | [ ] |
+| 3 | [[descrizione-strutturale]] | [x] | [ ] | [ ] |
+| 3 | [[entity-architecture]] | [x] | [ ] | [ ] |
+| 3 | [[port-vhdl]] | [x] | [ ] | [ ] |
+| 3 | [[generics-vhdl]] | [x] | [ ] | [ ] |
+| 3 | [[component-binding]] | [x] | [ ] | [ ] |
+| 3 | [[istanziazione-componenti]] | [x] | [ ] | [ ] |
+| 3 | [[generate-vhdl]] | [x] | [ ] | [ ] |
+| 3 | [[testbench]] | [x] | [ ] | [ ] |
+| 3 | [[porta-aoi]] | [x] | [ ] | [ ] |
+| 3 | [[rom]] | [x] | [ ] | [ ] |
+| 3 | [[nibble-comparator]] | [x] | [ ] | [ ] |

@@ -53,3 +53,7 @@ breve = "Il VHDL come linguaggio: regole lessicali, oggetti (costanti, variabili
 [[lezioni]]
 n = 2
 breve = "Descrizione dataflow: espressioni e operatori, assegnazioni concorrenti incondizionate, condizionate (WHEN … ELSE) e selezionate (WITH … SELECT), con i process equivalenti."
+
+[[lezioni]]
+n = 3
+breve = "Descrizione strutturale: entity e architecture, port e modi, generics, component e binding, istanziazione con PORT MAP, GENERATE e testbench."

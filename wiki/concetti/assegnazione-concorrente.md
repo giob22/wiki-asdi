@@ -61,6 +61,42 @@ S(1) & S(0) <= A(1 downto 0) XOR B(1 downto 0);
 **Fonte:** half adder con `Sum` prima di `Carry`.
 > 🧩 Derivazione mia: scambiando le due righe dell'half adder (`Carry <= A AND B;` prima di `Sum <= A XOR B;`) il circuito non cambia, perché ogni assegnazione è un blocco hardware indipendente che si attiva sulle variazioni dei propri ingressi, non una istruzione eseguita in sequenza.
 
+### Cosa succede a ogni evento · [[3-Descrizione Strutturale.pdf#page=23|p. 23]]
+
+Quando c'è un evento su uno dei segnali a destra dell'assegnazione: (1) si calcola il nuovo valore del segnale a sinistra; (2) si **schedula una transazione** su quel segnale secondo il timing dell'assegnazione (ad es. `AFTER 3ns`). Come l'istanziazione di un componente, l'assegnazione è sempre «attiva».
+
+### Derivazione — stessa funzione, tempi diversi · [[3-Descrizione Strutturale.pdf#page=24|p. 24]]–[[3-Descrizione Strutturale.pdf#page=25|25]]
+**Fonte:** due architecture di `porta_complessa` e la figura delle forme d'onda; la slide dà solo «24 ns contro 36 ns» per una variazione di `c`.
+
+```vhdl
+-- concurrent                              -- single_assignment
+w <= NOT a AFTER 12 NS;                    z <= (a AND b) or (c AND (NOT a)) AFTER 36 NS;
+x <= a AND b AFTER 12 NS;
+y <= c AND w AFTER 12 NS;
+z <= x OR y AFTER 12 NS;
+```
+
+**Stessa funzione:** sostituendo i fili, $z = x + y = a\,b + c\,w = a\,b + c\,\overline{a}$, che è l'espressione di `single_assignment`.
+
+**Variazione di `c`** (percorso più corto): `c` → `y` (12 ns) → `z` (12 ns) = **24 ns** nella prima; 36 ns fissi nella seconda.
+
+**La figura** (`a` scende da 1 a 0 a $t = 0$, con `b = c = 1`):
+
+| t (ns) | Evento | Calcolo | Transazione schedulata |
+|---|---|---|---|
+| 0 | `a`: 1→0 | `w = NOT 0 = 1`, `x = 0 AND 1 = 0` | `w ← 1` e `x ← 0` a 12 |
+| 12 | `w`: 0→1, `x`: 1→0 | `y = c AND w = 1`; `z = x OR y = 0 OR 0 = 0` (y è ancora 0) | `y ← 1` a 24, `z ← 0` a 24 |
+| 24 | `y`: 0→1, `z`: 1→0 | `z = x OR y = 0 OR 1 = 1` | `z ← 1` a 36 |
+| 36 | `z`: 0→1 | — | — |
+
+![[vhdl-3-p25-porta-complessa-forme-d-onda.png]]
+*Forme d'onda dell'architecture `concurrent`.*
+
+Prima e dopo, `z` vale 1 (con `a = 1, b = 1` vale $a\,b = 1$; con `a = 0, c = 1` vale $c\,\overline{a} = 1$), ma fra 24 e 36 ns scende a 0: è un **glitch** (alea statica), dovuto al fatto che `x` si spegne 12 ns prima che `y` si accenda. Con `single_assignment` il valore calcolato a $t = 0$ è ancora 1, quindi non si schedula nessun cambio e il glitch non c'è.
+> 🧩 Derivazione mia: la tabella evento per evento e la spiegazione del glitch; la figura della slide mostra il fenomeno senza commentarlo.
+
+**Sanity check:** i tempi della figura (12, 24, 36) sono multipli del ritardo di 12 ns di ciascuna assegnazione.
+
 ## Spiegazione
 
 L'assegnazione concorrente non è un'istruzione «eseguita una volta»: è la descrizione di un **collegamento permanente** fra un'espressione e un segnale, come una porta logica saldata sulla scheda. Per questo:
@@ -81,8 +117,9 @@ Capire la concorrenza è il salto mentale principale per chi viene dai linguaggi
 - [[operatori-vhdl]] — operatori logici bit a bit su vettori
 - [[half-adder]] — esempio di assegnazione incondizionata
 
-## Fonti · [[2-Descrizione Dataflow.pdf#page=4|p. 4]]–[[2-Descrizione Dataflow.pdf#page=6|6]]
+## Fonti · Dataflow [[2-Descrizione Dataflow.pdf#page=4|p. 4]]–[[2-Descrizione Dataflow.pdf#page=6|6]] · Strutturale [[3-Descrizione Strutturale.pdf#page=23|p. 23]]–[[3-Descrizione Strutturale.pdf#page=25|25]]
 
 - [[descrizione-dataflow-lezione]]
+- [[descrizione-strutturale-lezione]] — transazioni schedulate, confronto dei tempi di due architecture
 
-_Aggiornato: 2026-11-22 — creazione_
+_Aggiornato: 2026-11-22 — Lezione 3: schedulazione delle transazioni, porta complessa e glitch_

@@ -47,3 +47,19 @@ Esercizi collegati: [[...]]
 7. [[assegnazione-selezionata]] — `WITH … SELECT`, casi esaustivi ed esclusivi, process equivalente con `CASE`, confronto ([[2-Descrizione Dataflow.pdf#page=10|p. 10]]–[[2-Descrizione Dataflow.pdf#page=12|12]]).
 
 ---
+
+## Lezione 3 — VHDL: descrizione strutturale
+**PDF:** [[3-Descrizione Strutturale.pdf]] (pp. 1–31) · **Fonte:** [[descrizione-strutturale-lezione]]
+
+1. [[descrizione-strutturale]] — gerarchia di moduli, top-level, significato hardware dell'istanziazione ([[3-Descrizione Strutturale.pdf#page=1|p. 1]]–[[3-Descrizione Strutturale.pdf#page=2|2]], [[3-Descrizione Strutturale.pdf#page=4|p. 4]]).
+2. [[entity-architecture]] — entity come parte formale, più architecture, parte dichiarativa e corpo ([[3-Descrizione Strutturale.pdf#page=2|p. 2]]–[[3-Descrizione Strutturale.pdf#page=5|5]], [[3-Descrizione Strutturale.pdf#page=10|p. 10]]–[[3-Descrizione Strutturale.pdf#page=13|13]], [[3-Descrizione Strutturale.pdf#page=18|p. 18]]).
+3. [[port-vhdl]] — nome, tipo, modo; `IN`, `OUT`, `BUFFER`, `INOUT` ([[3-Descrizione Strutturale.pdf#page=6|p. 6]]–[[3-Descrizione Strutturale.pdf#page=7|7]]).
+4. [[generics-vhdl]] — parametri, priorità dei valori, ROM parametrica ([[3-Descrizione Strutturale.pdf#page=8|p. 8]]–[[3-Descrizione Strutturale.pdf#page=9|9]], [[3-Descrizione Strutturale.pdf#page=21|p. 21]]).
+5. [[component-binding]] — component come prototipo, configuration specification ([[3-Descrizione Strutturale.pdf#page=14|p. 14]]–[[3-Descrizione Strutturale.pdf#page=17|17]]).
+6. [[istanziazione-componenti]] — `PORT MAP`/`GENERIC MAP` posizionali e nominali, esempi ([[3-Descrizione Strutturale.pdf#page=19|p. 19]]–[[3-Descrizione Strutturale.pdf#page=22|22]]).
+7. [[assegnazione-concorrente]] — transazioni schedulate, porta AOI, due architecture con tempi diversi (aggiornata) ([[3-Descrizione Strutturale.pdf#page=23|p. 23]]–[[3-Descrizione Strutturale.pdf#page=25|25]]).
+8. [[porta-aoi]], [[rom]] — esempi della lezione ([[3-Descrizione Strutturale.pdf#page=9|p. 9]], [[3-Descrizione Strutturale.pdf#page=23|p. 23]]).
+9. [[generate-vhdl]] — `FOR`/`IF GENERATE`, 8 porte AND ([[3-Descrizione Strutturale.pdf#page=26|p. 26]]–[[3-Descrizione Strutturale.pdf#page=27|27]]).
+10. [[nibble-comparator]], [[testbench]] — testbench del nibble comparator, stimoli, tabella delle uscite ([[3-Descrizione Strutturale.pdf#page=27|p. 27]]–[[3-Descrizione Strutturale.pdf#page=31|31]]).
+
+---

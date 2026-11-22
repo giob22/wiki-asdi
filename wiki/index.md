@@ -30,6 +30,16 @@ Si aggiorna a ogni ingest; i concetti si raggruppano per area del corso in grass
 - [[assegnazione-condizionata]] — `WHEN … ELSE` con priorità (alta)
 - [[assegnazione-selezionata]] — `WITH … SELECT`, casi esclusivi (alta)
 
+**Stili di descrizione: strutturale**
+- [[descrizione-strutturale]] — gerarchia di moduli e composizione (alta)
+- [[entity-architecture]] — interfaccia e implementazione di un modulo (alta)
+- [[port-vhdl]] — port e modi `IN`/`OUT`/`BUFFER`/`INOUT` (alta)
+- [[generics-vhdl]] — parametri dei moduli e loro priorità (alta)
+- [[component-binding]] — component e scelta dell'architecture (media)
+- [[istanziazione-componenti]] — `PORT MAP` e `GENERIC MAP` (alta)
+- [[generate-vhdl]] — istanze ripetute con `FOR`/`IF GENERATE` (alta)
+- [[testbench]] — verifica in simulazione, stimoli, worst/best case (alta)
+
 ## Entità
 
 - [[vhdl]] — il linguaggio: definizione, livelli di astrazione, VHDL e Verilog (standard)
@@ -38,11 +48,15 @@ Si aggiorna a ogni ingest; i concetti si raggruppano per area del corso in grass
 - [[half-adder]] — semisommatore in dataflow (dispositivo)
 - [[buffer-tristate]] — buffer con uscita in alta impedenza (dispositivo)
 - [[multiplexer]] — mux 2:1 con abilitazione tristate (dispositivo)
+- [[porta-aoi]] — porta complessa AND-OR-INVERT (dispositivo)
+- [[rom]] — ROM 16×4 e ROM parametrica (dispositivo)
+- [[nibble-comparator]] — comparatore di nibble, DUT del testbench (dispositivo)
 
 ## Fonti
 
 - [[elementi-sintattici-vhdl-lezione]] — Lezione 1: VHDL, principali elementi sintattici (39 pagine)
 - [[descrizione-dataflow-lezione]] — Lezione 2: VHDL, descrizione dataflow (12 pagine)
+- [[descrizione-strutturale-lezione]] — Lezione 3: VHDL, descrizione strutturale (31 pagine)
 
 ## Esercizi
 

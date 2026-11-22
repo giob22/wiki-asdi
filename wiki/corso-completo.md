@@ -10,6 +10,7 @@ Testo unico di studio del corso (LM Ingegneria Informatica, UNINA, a.a. 2026-27,
 |---|---|---|
 | 1 | [[#Lezione 1 — VHDL: principali elementi sintattici\|VHDL: principali elementi sintattici]] | 1-Principali elementi sintattici VHDL.pdf |
 | 2 | [[#Lezione 2 — VHDL: descrizione Dataflow\|VHDL: descrizione Dataflow]] | 2-Descrizione Dataflow.pdf |
+| 3 | [[#Lezione 3 — VHDL: descrizione strutturale\|VHDL: descrizione strutturale]] | 3-Descrizione Strutturale.pdf |
 
 <!-- Ogni lezione è una sezione «## Lezione N — titolo» (trattino lungo): diventa la pagina lezione-N.html del sito.
 
@@ -736,3 +737,454 @@ END PROCESS;
 - Se tutti i casi di un'assegnazione condizionata sono mutuamente esclusivi, il costrutto è equivalente a un'assegnazione selezionata.
 
 *Approfondimenti nel wiki: [[descrizione-dataflow]], [[assegnazione-concorrente]], [[assegnazione-condizionata]], [[assegnazione-selezionata]], [[operatori-vhdl]], [[half-adder]], [[buffer-tristate]], [[multiplexer]]*
+
+## Lezione 3 — VHDL: descrizione strutturale
+
+*Fonte: 3-Descrizione Strutturale.pdf, 31 pagine (slide «VHDL Strutturale», v1.1).*
+
+### Roadmap · [[3-Descrizione Strutturale.pdf#page=1|p. 1]]
+
+Descrizione di un design digitale: entity e architecture, binding di architecture ed entity, istanziazione di componenti, parametrizzazione del design con i generics, assegnazione concorrente, costrutti generate.
+
+### Entity e architecture · [[3-Descrizione Strutturale.pdf#page=2|p. 2]]
+
+- Un sistema digitale si progetta come un insieme di **moduli organizzati gerarchicamente in un albero**: un modulo più esterno (**top-level module**, la radice) istanzia e collega altri moduli, che a loro volta ne istanziano altri, fino a moduli «elementari» (atomici).
+- Ogni modulo (design entity, design module) ha un insieme di terminali di I/O (**ports**) che formano la sua interfaccia con il mondo.
+- In VHDL un modulo può essere usato come **componente** o come **top-level module** del design.
+- Ogni modulo è descritto da due parti:
+  - una **entity**: l'interfaccia del modulo (segnali di ingresso/uscita e altri parametri, i generics);
+  - una **architecture**: il funzionamento del sistema, cioè il legame fra i pin di ingresso e di uscita.
+
+### Entity · [[3-Descrizione Strutturale.pdf#page=3|p. 3]]–[[3-Descrizione Strutturale.pdf#page=5|5]]
+
+- La dichiarazione di entity dichiara gli «oggetti» (segnali di I/O ed eventuali generics) usabili nell'implementazione:
+  - specifica il componente in termini dei suoi **port**: nome, tipo e direzione (**mode**);
+  - può specificare **costanti** (i generics) che controllano struttura e comportamento dell'entity.
+
+```vhdl
+ENTITY component_name
+  dichiarazione del nome, del tipo e del modo di tutti i porti
+  (opzionale) dichiarazione del nome, del tipo e del valore dei generics
+END component_name;
+```
+
+- La dichiarazione di entity è la **parte formale**: specifica tipi e modi dei port (e dei generics). I segnali effettivamente collegati (e il valore attuale dei generics) si specificano **all'istanziazione**: lì si stabilisce la corrispondenza fra port e segnali, e i segnali sono i **parametri effettivi**.
+- Dentro l'architecture si usano i nomi dei port per riferirsi ai segnali che verranno collegati.
+- **Significato hardware**: istanziare un modulo e specificarne i collegamenti equivale a usare un componente (ad es. un integrato della serie 74) e collegarne i piedini con dei fili (segnali), collegando così più componenti fra loro.
+
+```vhdl
+ENTITY nome_entita IS
+  PORT (
+    nome_segnale_1 : modo_segnale_1 tipo_segnale_1;
+    nome_segnale_2 : modo_segnale_2 tipo_segnale_2;
+    ...
+    nome_segnale_N : modo_segnale_N tipo_segnale_N;
+    nome_generic_1 : tipo_generic_1 [:= valore_generic_1];
+    ...
+    nome_generic_M : tipo_generic_M [:= valore_generic_M] );
+END nome_entita;
+
+ENTITY nome_entita IS
+  PORT (
+    nome_segnale_1 : modo_segnale_1 tipo_segnale_1;
+    nome_segnale_2 : modo_segnale_2 tipo_segnale_2;
+    ...
+    nome_segnale_N : modo_segnale_N tipo_segnale_N;
+  );
+END nome_entita;
+```
+
+- Il nome dell'entity è `nome_entita`; per ogni port i = 1…N: `nome_segnale_i` è il nome dell'i-esimo segnale, `modo_i` il modo di interazione con l'esterno (`IN`, `OUT`, `INOUT`, `BUFFER`), `tipo_segnale_i` il tipo, cioè l'insieme dei valori che il segnale può assumere in ogni istante (analogo al tipo di una variabile software).
+
+> ⚠️ Contraddizione: nel primo schema i generics compaiono dentro `PORT (…)`: vanno dichiarati in una clausola `GENERIC (…);` separata, prima di `PORT` (come nell'esempio della ROM). Nel secondo schema l'ultimo port non deve terminare con `;` prima della `)`.
+
+### Port · [[3-Descrizione Strutturale.pdf#page=6|p. 6]]–[[3-Descrizione Strutturale.pdf#page=7|7]]
+
+- Ogni port ha un **nome**, un **tipo** e un **modo**.
+- Il tipo è l'insieme di valori che qualunque segnale connesso al port può assumere: se un port è `std_logic`, tutti i segnali collegati devono essere `std_logic`.
+- A un port si possono collegare **solo segnali**, di tipo compatibile con quello del port (il VHDL è strong-typed).
+- Il **modo** fissa la direzione in cui i dati passano fra modulo e mondo esterno. Quattro modi:
+  - **IN**: il port è solo un ingresso; il circuito che lo pilota (driver) è esterno all'entità;
+  - **OUT**: il port è un'uscita e il driver è interno; il valore di un pin `OUT` **non può essere letto** dentro l'entità;
+  - **BUFFER**: port di uscita il cui valore **può anche essere letto** dentro l'entità;
+  - **INOUT**: il segnale si usa sia come ingresso sia come uscita (ad es. un bus dati bidirezionale).
+- È consigliabile usare `inout` solo nella top-level entity e **non usare** il modo `buffer`.
+
+```vhdl
+ENTITY nome_entita IS PORT (
+  A : IN bit;
+  B : IN bit_vector(0 to 3);
+  Z : OUT bit );
+```
+
+![[vhdl-3-p7-modi-dei-port.png]]
+*I modi dei port: con `out` il valore riletto all'interno passa da un segnale interno (`W_OUTPUT`); con `buffer` si rilegge direttamente l'uscita (`OUTPUT`); `inout` (`BIDIR`) è un terminale bidirezionale.*
+
+### Generics · [[3-Descrizione Strutturale.pdf#page=8|p. 8]]–[[3-Descrizione Strutturale.pdf#page=9|9]]
+
+- I generics si specificano nell'interfaccia di un'entity e **parametrizzano la descrizione**: rispetto al numero di bit di ingressi e uscite, esplicitando caratteristiche del timing (tempi di propagazione, …), definendo parametri fisici del modulo (capacità dei nodi di ingresso o uscita, dipendenza dalla temperatura, …).
+- Il valore di un generic va specificato in almeno uno di questi modi:
+  1. come **valore di default** nella dichiarazione di entity (sempre raccomandato, per assicurare che il componente sia sintetizzabile e simulabile);
+  2. nella **dichiarazione del component**;
+  3. nell'**istanziazione del component**.
+- Se se ne usano più d'uno vale quello a **priorità maggiore**: il caso 3 sovrascrive gli altri, e così via.
+- Come generics si possono usare solo quantità **costanti** (classe constant) o **espressioni statiche** (che coinvolgono solo costanti).
+- Esempio: una **ROM** come classe di entity che differiscono nei parametri della struttura; due generics fissano i bit del data bus e dell'address bus, e la ROM memorizza $2^{depth}$ word di `width` bit.
+
+```vhdl
+ENTITY rom IS
+  GENERIC( width : positive := 32;
+           depth : positive := 4);
+  PORT(
+    enable  : IN std_logic;
+    address : IN std_logic_vector(depth-1 downto 0);
+    data    : OUT std_logic_vector(width-1 downto 0) );
+END rom;
+```
+
+- Se non c'è un valore di default, i valori effettivi vanno dati nella dichiarazione o nell'istanziazione: alla fine i generics **devono essere risolti**.
+
+### Architecture · [[3-Descrizione Strutturale.pdf#page=10|p. 10]]–[[3-Descrizione Strutturale.pdf#page=12|12]]
+
+- L'interfaccia definisce come il modulo interagisce con il mondo esterno; un'architecture descrive **una particolare implementazione** del modulo.
+- Per una stessa interfaccia possono esistere **più architecture**: ognuna descrive lo stesso modulo da punti di vista (livelli di astrazione) o livelli di dettaglio diversi; all'istanziazione bisogna allora scegliere il **binding**.
+- Un'architecture ha due parti: una **parte dichiarativa**, dove si definiscono gli oggetti usati nella descrizione (tipi, segnali, costanti, component, …), e un **corpo** (architecture body), la descrizione vera e propria, che usa i segnali e i generics dell'interfaccia e gli oggetti dichiarati.
+
+```vhdl
+ARCHITECTURE identifier OF entity_name IS
+  dichiarazioni iniziali                          -- parte dichiarativa
+BEGIN
+  Specifica del componente in funzione degli
+  ingressi, dei parametri fisici e degli altri parametri.   -- architecture body
+END identifier;
+
+ARCHITECTURE nome_architettura OF nome_entita IS
+  dichiarazioni dei tipi usati
+  definizione delle costanti
+  dichiarazioni dei segnali interni al modulo
+  definizione di funzioni o procedure
+  dichiarazioni dei componenti
+  specificazione della configurazione dei componenti (binding)
+BEGIN
+  statement concorrente
+  ...
+  statement concorrente
+END nome_architettura;
+```
+
+#### Parte dichiarativa: tipi, segnali e costanti · [[3-Descrizione Strutturale.pdf#page=13|p. 13]]
+
+```vhdl
+TYPE nome_tipo : definizione_tipo;                           -- dichiarazione di tipo
+CONSTANT nome_costante : tipo_costante := valore_costante;   -- dichiarazione di costante
+SIGNAL nome_segnale : tipo_segnale [:= valore_iniziale];      -- dichiarazione di segnali
+```
+
+- Tutte le dichiarazioni sono **locali al modulo**.
+- Tipi e costanti rendono la descrizione più leggibile e manutenibile.
+- I segnali «istanziano» dei **fili** che collegano fra loro i blocchi logici dell'architecture body, comunque siano descritti (assegnazioni, istanziazione di blocchi, process, …).
+
+```vhdl
+TYPE std_ulogic IS ( U , X , 0 , -- indefinito, pi  driver, 0 logico,
+     1 , Z , W , L , H , - );    -- 1 logico, weak X, 0, 1, don t care
+CONSTANT t_clock : time := 10ns;
+SIGNAL in0 : std_ulogic :=  1 ;
+SIGANL in1 : bit;
+```
+
+> ⚠️ Contraddizione: nel codice della slide mancano gli apici (`'U', 'X', '0', …`, `:= '1'`), la dichiarazione di tipo si scrive `TYPE nome_tipo IS definizione_tipo;` e `SIGANL` sta per `SIGNAL`. Il commento «pi driver» è «più driver»: `'X'` indica un conflitto fra più driver.
+
+#### Parte dichiarativa: component e binding · [[3-Descrizione Strutturale.pdf#page=14|p. 14]]
+
+- Le **dichiarazioni di componenti** definiscono le interfacce delle design entity usate; le **specificazioni di configurazione** fissano, per ogni istanza di un component, quale architecture usare.
+- La dichiarazione di un component è simile alla definizione di un'entity: stesse informazioni per i segnali (nome, modo, tipo) e per i generics (nome, tipo, valore).
+
+```vhdl
+COMPONENT nome_componente PORT (dichiarazione dei porti)
+  GENERIC (dichiarazione dei generics);                  -- dichiarazioni di componenti
+FOR ALL | elenco di label : nome_componente
+  USE ENTITY nome_libreria.nome_entity(nome_architecture);   -- specificazione della configurazione
+
+COMPONENT n1 PORT (i1: IN BIT;
+                   o1: OUT BIT);
+END COMPONENT;
+FOR ALL : n1 USE ENTITY WORK.inv (single_delay);
+```
+
+### Binding · [[3-Descrizione Strutturale.pdf#page=15|p. 15]]–[[3-Descrizione Strutturale.pdf#page=17|17]]
+
+- Un'architecture può usare entità descritte separatamente e disponibili nella libreria corrente (`work`) o in altre librerie (design libraries).
+- L'architecture deve dichiarare un **component**: un «prototipo» del blocco da istanziare, un **blocco virtuale**, che prima di essere istanziato va mappato su un blocco specifico per definirne il comportamento ingresso-uscita.
+- La component declaration specifica i port (ed eventualmente i generics), ma **non** quale architecture body verrà istanziato.
+- Nella parte dichiarativa (prima di `BEGIN`) ci sono la **component declaration** (interfaccia del componente da istanziare) e la **configuration specification** (il binding: quale architecture si usa nelle varie istanze; poco usata).
+- Nella statement part (dopo `BEGIN`) ci sono le **istanziazioni** dei componenti (il binding si può fare anche lì).
+
+```vhdl
+ARCHITECTURE nome_architettura OF nome_entita IS
+  dichiarazioni di componenti
+  binding dei component con le architectures
+BEGIN
+  statement concorrente
+  instanziazione dei componenti
+END nome_architettura;
+
+ARCHITECTURE nome_architettura OF nome_entita IS
+  COMPONENT n1 PORT (i1: IN BIT; o1: OUT BIT); END COMPONENT;
+  COMPONENT n2 PORT (i1, i2: IN BIT; o1: OUT BIT); END COMPONENT;
+  FOR ALL : n1 USE ENTITY WORK.inv (single_delay);
+  FOR ALL : n2 USE ENTITY WORK.nand2 (single_delay);
+BEGIN
+```
+
+### Architecture body · [[3-Descrizione Strutturale.pdf#page=18|p. 18]]
+
+- Il corpo dell'architecture è composto da **statement concorrenti** (istanziazione di un componente, assegnazione di un segnale, definizione di un process, …).
+- Nel corpo i port si usano come segnali, rispettandone il modo: un `IN` si può solo leggere, un `OUT` si può solo scrivere. Un segnale è **scritto** se sta a sinistra di un'assegnazione.
+
+### Istanziazione di un componente · [[3-Descrizione Strutturale.pdf#page=19|p. 19]]–[[3-Descrizione Strutturale.pdf#page=22|22]]
+
+- L'istanziazione è uno **statement concorrente**, sempre «attivo»: quando c'è un evento su un port di ingresso, il componente si attiva e reagisce secondo il suo comportamento I/O, generando eventi sulle uscite.
+- Segnali e costanti si assegnano a port e generics **ordinatamente** secondo la definizione (**associazione posizionale**) o con un'**associazione esplicita per nome** (**nominale**).
+- Ogni istanza richiede una **label** diversa: la label è il nome del blocco logico e distingue le istanze della stessa entity.
+- Con l'associazione nominale l'ordine è ininfluente; con quella posizionale bisogna rispettare l'ordine di dichiarazione dei port.
+
+```vhdl
+nome_label: nome_componente
+  PORT MAP (segnale_1, segnale_2, ..., segnale_N)
+  GENERIC MAP (valore_1, valore_2, ..., valore_M);            -- istanziazione con assegnazione posizionale
+
+nome_label: nome_componente
+  PORT MAP (nome_segnale_1 => segnale_1, ..., nome_segnale_N => segnale_N)
+  GENERIC MAP (nome_generic_1 := valore_1, ..., nome_generic_M := valore_M);   -- istanziazione con assegnazione nominale
+```
+
+> ⚠️ Contraddizione: `GENERIC MAP` va scritto **prima** di `PORT MAP` (come nell'esempio della ROM qui sotto) e l'associazione per nome usa `=>` anche nel `GENERIC MAP`, non `:=`. Lo stesso vale per la component declaration, dove `GENERIC (…)` precede `PORT (…)`.
+
+#### Esempio con generics · [[3-Descrizione Strutturale.pdf#page=21|p. 21]]
+
+```vhdl
+COMPONENT rom
+  GENERIC (width : positive := 8;
+           depth : positive := 4);
+  PORT (
+    enable  : IN std_logic;
+    address : IN std_logic_vector(depth-1 downto 0);
+    data    : OUT std_logic_vector(width-1 downto 0) );
+END COMPONENT;
+
+rom_0 : rom GENERIC MAP (16, 4) PORT MAP ( );                       -- rom di 16 word di 16 bit
+rom_1 : rom PORT MAP ( );                                           -- rom di 16 word di 8 bit
+rom_2 : rom GENERIC MAP (depth => 5, width => 32) PORT MAP ( );     -- rom di 32 word di 32 bit
+```
+
+- In `rom_0` il valore 16 sovrascrive `width = 8` della dichiarazione del component, che a sua volta aveva sovrascritto il default `width = 32` dell'entity.
+
+#### Altri esempi di istanziazione · [[3-Descrizione Strutturale.pdf#page=22|p. 22]]
+
+```vhdl
+COMPONENT n1 PORT (i1: IN BIT; o1: OUT BIT); END COMPONENT;
+COMPONENT n2 PORT (i1, i2: IN BIT; o1: OUT BIT); END COMPONENT;
+FOR ALL : n1 USE ENTITY WORK.inv(single_delay);
+FOR ALL : n2 USE ENTITY WORK.nand2 (single_delay);
+BEGIN
+  g0 : n1 PORT MAP (a, im1);                          -- associazione posizionale
+  g1 : n1 PORT MAP (i1 => b, o1 => im2);              -- nominale nello stesso ordine
+  g2 : n2 PORT MAP (o1 => im3, i2 => im2, i1 => a);   -- nominale in ordine diverso
+  g3 : n2 PORT MAP (a, gt, im4);                      -- associazione posizionale
+```
+
+### Assegnazione di un segnale · [[3-Descrizione Strutturale.pdf#page=23|p. 23]]–[[3-Descrizione Strutturale.pdf#page=25|25]]
+
+- Come l'istanziazione, anche un'assegnazione di segnale è uno statement concorrente, sempre «attivo». Quando c'è un evento su uno dei segnali a destra:
+  1. si calcola il valore del segnale a sinistra secondo l'espressione;
+  2. si **schedula una transazione** sul segnale di uscita secondo il timing dell'assegnazione.
+
+```vhdl
+-- Descrizione Data-Flow di una porta complessa AOI
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+ENTITY AOI IS PORT (
+  i1 : IN std_logic;
+  i2 : IN std_logic;
+  i3 : IN std_logic;
+  O1 : OUT std_logic );
+--
+ARCHITECTURE dataflow OF AOI IS
+BEGIN
+  o1 <= NOT(i1 AND i2 OR i3) AFTER 3ns;
+END dataflow;
+```
+
+> ⚠️ Contraddizione: manca `END AOI;` alla fine dell'entity, e `i1 AND i2 OR i3` va scritto con le parentesi, `(i1 AND i2) OR i3`: in VHDL operatori logici diversi non si mescolano senza parentesi.
+
+- Qual è la differenza fra le due architetture seguenti?
+
+```vhdl
+ENTITY porta_complessa IS
+  PORT ( a, b, c : IN std_logic;
+         z : OUT std_logic);
+END porta_complessa ;
+--
+ARCHITECTURE concurrent OF porta_complessa IS
+  SIGNAL w, x, y : std_logic ;
+BEGIN
+  w <= NOT a AFTER 12 NS;
+  x <= a AND b AFTER 12 NS;
+  y <= c AND w AFTER 12 NS;
+  z <= x OR y AFTER 12 NS;
+END concurrent;
+---
+ARCHITECTURE single_assignment OF porta_complessa IS
+BEGIN
+  z <= (a AND b) or (c AND (NOT a)) AFTER 36 NS;
+END single_assignment;
+```
+
+- Le due architetture hanno lo **stesso comportamento funzionale** (la stessa funzione booleana) ma **tempificazioni diverse**: una variazione di `c` produce un'(eventuale) variazione di `z` dopo **24 ns** nella prima architettura e dopo **36 ns** nella seconda.
+
+![[vhdl-3-p25-porta-complessa-forme-d-onda.png]]
+*Architettura `concurrent`: `a` scende a 0 ns con `b = c = 1`; `w` sale e `x` scende a 12 ns, `y` sale a 24 ns; `z` scende a 24 ns e torna alto a 36 ns.*
+
+### Costrutti iterativi: generate · [[3-Descrizione Strutturale.pdf#page=26|p. 26]]–[[3-Descrizione Strutturale.pdf#page=27|27]]
+
+- Spesso un blocco logico è composto da un solo blocco più semplice istanziato molte volte (un sommatore carry-ripple, una porta logica che opera su word, …). Il costrutto **generate** istanzia iterativamente un insieme di blocchi, con un `FOR` o con un `IF`:
+
+```vhdl
+label : FOR identifier IN range GENERATE
+  concurrent_statements;
+END GENERATE [label];
+
+label : IF (boolean_expression) GENERATE
+  concurrent_statements;
+END GENERATE [label];
+```
+
+- In un generate si può includere **qualsiasi statement concorrente**. Non si possono usare `ELSE` o `ELSIF` con il generate prima del VHDL 2008.
+- Un **nibble comparator** segnala se il numero rappresentato da una stringa `a` di 4 bit (nibble) è maggiore, minore o uguale a quello rappresentato da una stringa `b`. Interfaccia (nel PDF, sotto il riquadro del codice):
+
+```vhdl
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+ENTITY nibble_comparator IS
+  PORT ( a, b : IN std_logic_vector(3 DOWNTO 0);    -- a and b data inputs
+         gt, eq, lt : IN std_logic;                 -- previous greater, equal, less than
+         a_gt_b,                                    -- a > b
+         a_eq_b,                                    -- a = b
+         a_lt_b : OUT std_logic);                   -- a < b
+END nibble_comparator;
+```
+
+- Esempio di `FOR … GENERATE`: 8 porte AND, una per bit.
+
+```vhdl
+ARCHITECTURE test OF test IS
+  COMPONENT and02 PORT(
+    a0 : IN std_logic;
+    a1 : IN std_logic;
+    y  : OUT std_logic);
+  END COMPONENT and02;
+BEGIN
+  G1 : FOR n IN 7 DOWNTO 0 GENERATE
+    and_gate:and02 PORT MAP( a0 => sig1(n), a1 => sig2(n), y => z(n));
+  END GENERATE G1;
+END test;
+```
+
+![[vhdl-3-p27-for-generate-and.png]]
+*Le 8 istanze di `and02` generate dal ciclo: il bit n di `sig1` e di `sig2` entra nella n-esima porta, la cui uscita va nel bit n del bus d'uscita (chiamato `z` nel codice e `sig3` nella figura).*
+
+### Testbench · [[3-Descrizione Strutturale.pdf#page=28|p. 28]]–[[3-Descrizione Strutturale.pdf#page=31|31]]
+
+- Per verificare funzionamento e tempificazione di un progetto VHDL si usano i **testbench**. Un testbench è una design unit che:
+  - dichiara e istanzia il blocco da testare (**design under test, DUT**);
+  - applica una sequenza opportuna di **stimoli**;
+  - **verifica** che le uscite siano corrette secondo le specifiche.
+- È un'entità **senza ingressi né uscite**, perché nessun altro blocco la istanzia.
+- Il testbench più semplice applica la sequenza degli ingressi senza verificarne l'esattezza: le uscite le controlla l'utente.
+
+![[vhdl-3-p28-testbench-nibble-comparator.png]]
+*Il testbench `test_bench (input_output)`: generatori di forme d'onda su `a(3:0)` e `b(3:0)`, ingressi di cascata `gt`, `eq`, `lt` fissati, uscite `a_gt_b`, `a_eq_b`, `a_lt_b` osservate.*
+
+```vhdl
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+--
+ENTITY nibble_comparator_tb IS
+END nibble_comparator;
+--
+ARCHITECTURE input_output OF nibble_comparator_test_bench IS
+  COMPONENT comp4 PORT (a, b : IN std_logic_vector (3 DOWNTO 0);
+    a_gt_b, a_eq_b, a_lt_b : IN std_logic;
+    a_gt_b_out, a_eq_b_out, a_lt_b_out : OUT std_logic);
+  END COMPONENT;
+  FOR a1 : comp4 USE ENTITY WORK.nibble_comparator(iterative);
+  SIGNAL a, b : std_logic_vector (3 DOWNTO 0);
+  SIGNAL eql, lss, gtr, gnd : std_logic;
+  SIGNAL vdd : std_logic := '1';
+BEGIN
+  -- istanziazione del DUT
+  a1: comp4 PORT MAP (a, b, gnd, vdd, gnd, gtr, eql, lss);
+  -- applicazione dei segnali su a2
+  a2: a <= "0000",                 -- a = b (steady state)
+           "1111" AFTER 0500 NS,   -- a > b (worst case)
+           "1110" AFTER 1500 NS,   -- a < b (worst case)
+           "1110" AFTER 2500 NS,   -- a > b (need bit 1 info)
+           "1010" AFTER 3500 NS,   -- a < b (need bit 2 info)
+           "0000" AFTER 4000 NS,   -- a < b (steady state, prepare for next)
+           "1111" AFTER 4500 NS,   -- a = b (worst case)
+           "0000" AFTER 5000 NS,   -- a < b (need bit 3 only, best case)
+           "0000" AFTER 5500 NS,   -- a = b (worst case)
+           "1111" AFTER 6000 NS;   -- a > b (need bit 3 only, best case)
+  -- applicazione dei segnali su a3
+  a3 : b <= "0000",                -- a = b (steady state)
+            "1110" AFTER 0500 NS,  -- a > b (worst case)
+            "1111" AFTER 1500 NS,  -- a < b (worst case)
+            "1100" AFTER 2500 NS,  -- a > b (need bit 1 info)
+            "1100" AFTER 3500 NS,  -- a < b (need bit 2 info)
+            "1111" AFTER 4000 NS,  -- a < b (steady state, prepare for next)
+            "1111" AFTER 4500 NS,  -- a = b (worst case)
+            "1111" AFTER 5000 NS,  -- a < b (need bit 3 only, best case)
+            0000" AFTER 5500 NS,   -- a = b (worst case)
+            0000" AFTER 6000 NS;   -- a > b (need bit 3 only, best case)
+END input_output;
+```
+
+> ⚠️ Contraddizione: i nomi non tornano (`ENTITY nibble_comparator_tb` chiusa da `END nibble_comparator`, architecture di `nibble_comparator_test_bench`); nelle ultime due righe di `b` manca il doppio apice iniziale. `gnd` è uno `std_logic` senza valore iniziale, quindi in simulazione vale `'U'` e non `'0'`: va dichiarato `SIGNAL gnd : std_logic := '0';`.
+
+| TIME (ns) | a(3:0) | b(3:0) | gtr | eql | lss |
+|---|---|---|---|---|---|
+| 0 | "0000" | "0000" | '0' | '0' | '0' |
+| 5 | … | … | … | '1' | … |
+| 500 | "1111" | "1110" | … | … | … |
+| 544 | … | … | '1' | … | … |
+| 548 | … | … | … | '0' | … |
+| 1500 | "1110" | "1111" | … | … | … |
+| 1544 | … | … | '0' | … | … |
+| 1548 | … | … | … | … | '1' |
+| 2500 | … | "1100" | … | … | … |
+| 2533 | … | … | … | … | '0' |
+| 2537 | … | … | '1' | … | … |
+| 3500 | "1010" | … | … | … | … |
+| 3522 | … | … | '0' | … | … |
+| 3526 | … | … | … | … | '1' |
+| 4000 | "0000" | "1111" | … | … | … |
+| 4500 | "1111" | … | … | … | … |
+| 4544 | … | … | … | '1' | … |
+| 4548 | … | … | … | … | '0' |
+| 5000 | "0000" | … | … | … | … |
+| 5011 | … | … | … | '0' | … |
+| 5015 | … | … | … | … | '1' |
+| 5500 | … | "0000" | … | … | … |
+| 5544 | … | … | … | … | '0' |
+| 5548 | … | … | … | '1' | … |
+| 6000 | "1111" | … | … | … | … |
+
+- Nella tabella i puntini indicano che un segnale ha lo stesso valore dell'istante precedente.
+- Dall'istante 0 fino a 5 ns non c'è attività e tutti gli ingressi sono bassi; da lì in poi, a intervalli regolari, si applicano nuovi test pattern.
+- Agli istanti 500 e 1500 ns ci sono i **worst case** (propagazione attraverso tutti gli stadi): 48 ns.
+- Agli istanti 5000 e 6000 ns ci sono i **best case** (decide l'ultimo stadio): 15 ns.
+- Si testano le varie condizioni scambiando l'ingresso `a` con `b`, per sollecitare tutto il modulo.
+
+> ⚠️ Contraddizione: il testo della slide indica gli istanti come «5 ns, 15 ns, 50 ns, 60 ns» e i pattern «ogni 10 ns», mentre tabella e codice usano 500, 1500, 5000, 6000 ns con pattern ogni 500–1000 ns; qui si seguono la tabella e il codice.
+
+*Approfondimenti nel wiki: [[descrizione-strutturale]], [[entity-architecture]], [[port-vhdl]], [[generics-vhdl]], [[component-binding]], [[istanziazione-componenti]], [[generate-vhdl]], [[testbench]], [[assegnazione-concorrente]], [[porta-aoi]], [[rom]], [[nibble-comparator]]*
