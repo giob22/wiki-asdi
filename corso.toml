@@ -5,9 +5,9 @@
 # qui sotto si aggiungono solo i dati in più (descrizione breve, approfondimenti, esclusioni).
 
 [corso]
-nome = "{{NOME_CORSO}}"           # es. "Trasmissione dei Segnali Digitali"
-sigla = "{{SIGLA}}"               # es. "tsd": nome della repo (wiki-tsd) e prefisso delle preferenze del sito
-descrizione = "{{DESCRIZIONE}}"   # es. "LM Ingegneria Informatica, UNINA, docente ..., esame orale"
+nome = "Architettura dei Sistemi Digitali"           # es. "Trasmissione dei Segnali Digitali"
+sigla = "asdi"               # es. "tsd": nome della repo (wiki-tsd) e prefisso delle preferenze del sito
+descrizione = "LM Ingegneria Informatica, UNINA, a.a. 2026-27, Proff. Nicola Mazzocca e Alessandra De Benedictis; esame: elaborato di gruppo, esercizio di progetto in aula (VHDL e simulazione), prova orale"   # es. "LM Ingegneria Informatica, UNINA, docente ..., esame orale"
 
 [sito]
 # Testo introduttivo dell'indice (Markdown, formule ammesse).

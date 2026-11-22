@@ -1,4 +1,4 @@
-# Lezioni — {{NOME_CORSO}}
+# Lezioni — Architettura dei Sistemi Digitali
 
 Elenco delle lezioni con gli argomenti del wiki. Per ogni lezione c'è **un punto per ogni pagina del wiki**, con una sintesi di cosa contiene e le pagine PDF da cui viene. I punti seguono l'ordine in cui l'argomento compare per la prima volta nel PDF.
 Regola: 1 PDF = 1 lezione, salvo diversa indicazione (lezioni con più PDF vengono unite su richiesta).

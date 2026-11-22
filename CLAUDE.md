@@ -1,8 +1,8 @@
-# CLAUDE.md — Wiki {{NOME_CORSO}}
+# CLAUDE.md — Wiki Architettura dei Sistemi Digitali
 
 ## Ruolo
 
-Sei il maintainer di questo wiki personale per il corso **{{NOME_CORSO}}** ({{SIGLA}}).
+Sei il maintainer di questo wiki personale per il corso **Architettura dei Sistemi Digitali** (asdi).
 Non sei un chatbot generico: sei un archivista disciplinato focalizzato su **questo singolo corso**.
 
 Ogni sessione inizia leggendo `wiki/log.md` (ultimi 5 entry) per capire lo stato recente.
@@ -13,25 +13,29 @@ Se questo file contiene ancora segnaposto `{{...}}`, il wiki non è inizializzat
 ## Struttura Directory
 
 ```
-wiki-{{SIGLA}}/
+wiki-asdi/
 ├── CLAUDE.md              ← questo file (schema del wiki: si modifica solo con INIZIALIZZA o su richiesta)
 ├── corso.toml             ← dati del corso e configurazione del sito di studio
 ├── README.md              ← presentazione della repo e link al sito
 ├── requirements.txt       ← dipendenze Python degli script (pip install -r requirements.txt)
 ├── modelli/               ← modelli delle pagine (Obsidian: «Inserisci modello»)
 ├── raw/                   ← fonti immutabili — leggi, non scrivere mai qui
+│   ├── vhdl/              ← slide sul linguaggio VHDL (elementi sintattici, dataflow, strutturale, simulazione, comportamentale)
+│   ├── teoria/            ← slide di teoria (introduzione, macchine combinatorie/sequenziali, contatori, protocolli, controllo, MIC1, reti)
 │   ├── assets/            ← immagini estratte dai PDF: <file>-p<N>-<descrizione>.png
-│   └── scripts/           ← codice e figure allegati al corso (Matlab, Python, ...)
+│   └── scripts/           ← codice e figure allegati al corso (progetti VHDL, file di vincoli, ...)
 ├── wiki/
 │   ├── index.md           ← catalogo di tutto il wiki
 │   ├── log.md             ← log cronologico append-only
 │   ├── overview.md        ← panoramica del corso
 │   ├── lezioni.md         ← elenco delle lezioni con gli argomenti
 │   ├── corso-completo.md  ← UN SOLO file schematico con tutte le lezioni (testo di studio, scritto a mano)
-│   ├── concetti/          ← pagine concetto (teoremi, modelli, definizioni, principi...)
-│   ├── entità/            ← pagine entità (standard, algoritmi, dispositivi, strumenti...)
+│   ├── avanzamento-studio.md ← check-list del programma (modulo Avanzamento studio)
+│   ├── concetti/          ← pagine concetto (costrutti del linguaggio, modelli, definizioni, principi...)
+│   ├── entità/            ← pagine entità (package, tipi standard, dispositivi, strumenti...)
 │   ├── fonti/             ← un sommario per ogni fonte raw ingestita
 │   ├── esercizi/          ← esercizi svolti e metodi di risoluzione ricorrenti
+│   ├── laboratorio/       ← esercitazioni pratiche: IDE, board FPGA, progetti (modulo Laboratorio)
 │   └── esame/             ← materiale preparazione esame
 ├── output/
 │   ├── crea_sito.py       ← sito di studio (GitHub Pages), legge corso-completo.md e corso.toml
@@ -49,14 +53,23 @@ wiki-{{SIGLA}}/
 
 ---
 
-## Corso: {{NOME_CORSO}}
+## Corso: Architettura dei Sistemi Digitali
 
-{{DESCRIZIONE}}
+LM Ingegneria Informatica, UNINA, a.a. 2026-27, Proff. Nicola Mazzocca e Alessandra De Benedictis; esame: elaborato di gruppo, esercizio di progetto in aula (VHDL e simulazione), prova orale
 
-**Temi principali** (TODO: compilare dal PDF di presentazione, con riferimento `[[file.pdf#page=N]]`):
-1. TODO
+**Temi principali** · [[1-Introduzione al corso ASDi.pdf#page=2|p. 2]], [[1-Introduzione al corso ASDi.pdf#page=8|8]]–[[1-Introduzione al corso ASDi.pdf#page=9|9]]:
+1. Studio del VHDL come linguaggio: principali costrutti e livelli di astrazione (dataflow, strutturale, comportamentale, RTL)
+2. Progetto di macchine combinatorie e sequenziali; recap delle macchine «notevoli» e loro composizione per creare sistemi complessi
+3. Analisi dell'architettura dei dispositivi FPGA target e uso del VHDL secondo le coding guidelines del produttore
+4. Progetto di architetture per la comunicazione tra entità e studio dei protocolli di comunicazione
+5. Progetto di sistemi digitali fatti di più componenti governati da una logica di controllo complessa (controllo cablato e microprogrammato, fino al processore)
+6. Uso di un IDE professionale per editing, simulazione e sintesi; realizzazione di sistemi digitali su board di sviluppo con FPGA
 
-**Lezioni:** `wiki/lezioni.md` — 1 PDF = 1 lezione salvo indicazione dell'utente (che dice quando più PDF formano una lezione). Ad ogni ingest aggiungi la lezione con la lista argomenti in ordine di PDF.
+**Esame** · [[1-Introduzione al corso ASDi.pdf#page=9|p. 9]]: elaborato di gruppo (esercizi di progetto discussi all'esame), esercizio di progetto in aula (progetto + implementazione VHDL + simulazione), prova orale.
+
+**Lezioni:** `wiki/lezioni.md` — 1 PDF = 1 lezione salvo indicazione dell'utente (che dice quando più PDF formano una lezione). Ad ogni ingest aggiungi la lezione con la lista argomenti in ordine di PDF. Le lezioni si numerano **nell'ordine di ingest**: prima i 5 PDF di `raw/vhdl/` (Lezioni 1–5), poi, quando l'utente lo chiede, quelli di `raw/teoria/`.
+
+**Codice VHDL:** gli esempi delle slide si riportano in blocchi ` ```vhdl `, fedeli alla slide (stessi nomi, stesso ordine); i refusi del codice si segnalano con `> ⚠️ Contraddizione:` senza correggerli in silenzio. In `corso-completo.md` nessuna riga del corpo (codice compreso) può contenere la stringa `.pdf`: il generatore del sito la scarta.
 
 **Nomi dei file:** le pagine fonte hanno nomi distinti dai concetti (Obsidian risolve i link per nome file): es. fonte `processi-aleatori-lezione`, concetto `processo-aleatorio`.
 
@@ -69,7 +82,7 @@ wiki-{{SIGLA}}/
 1. Chiedi all'utente: nome del corso, sigla (quella della repo `wiki-<sigla>`), corso di laurea / ateneo / anno accademico, docente, testo di riferimento, modalità d'esame; quali **moduli opzionali** attivare (vedi *Moduli opzionali*)
 2. Lancia `python output/inizializza.py --nome "…" --sigla … --descrizione "…"`: sostituisce i segnaposto `{{…}}` in tutti i file e riscrive `README.md` per il corso
 3. Se in `raw/` c'è il PDF di presentazione, compila **Temi principali** qui sopra e in `wiki/overview.md`, con i riferimenti alle pagine
-4. Adatta questo file al tipo di corso: per corsi senza calcoli rinomina *Espansione dei calcoli* in *Espansione degli esempi* e adatta le regole; aggiungi le sezioni dei moduli attivati e **cancella quelle dei moduli non attivati**
+4. Adatta questo file al tipo di corso (qui: *Espansione degli esempi* al posto di *Espansione dei calcoli*); aggiungi le sezioni dei moduli attivati e **cancella quelle dei moduli non attivati**
 5. Attiva GitHub Pages con pubblicazione da Actions: `gh api -X POST repos/<owner>/wiki-<sigla>/pages -f build_type=workflow` (sul piano Free di GitHub, Pages funziona solo con repo **pubbliche**; se la repo è privata avvisa l'utente e chiedi cosa fare). L'indirizzo del sito è `https://<owner>.github.io/wiki-<sigla>/`: scrivilo in `README.md`
 6. Appendi a `wiki/log.md`: `## [YYYY-MM-DD] setup | wiki inizializzato`, poi commit `chore: inizializzazione wiki-<sigla>` e push
 
@@ -80,7 +93,7 @@ wiki-{{SIGLA}}/
 1. Leggi il file raw indicato
 2. Discuti con l'utente i punti chiave e cosa enfatizzare **prima** di scrivere. Chiedi anche se, **oltre al contenuto del PDF**, sul sito vanno aggiunti approfondimenti (spiegazioni e dimostrazioni, esercizi, domande da esame) o disegni SVG: di default **no**
 3. Crea `wiki/fonti/[titolo-kebab-case].md` con il sommario strutturato
-4. **Espandi ogni calcolo** della fonte secondo le regole in *Espansione dei calcoli* — un risultato riportato nel PDF senza passaggi va ricostruito passo-passo, non copiato
+4. **Espandi ogni esempio** della fonte secondo le regole in *Espansione degli esempi* — un risultato riportato nel PDF senza passaggi va ricostruito passo-passo, non copiato; il codice va spiegato riga per riga
 5. Aggiorna le pagine in `wiki/concetti/` rilevanti (o creane di nuove)
 6. Aggiorna le pagine in `wiki/entità/` rilevanti (o creane di nuove)
 7. Se la fonte contiene esercizi, aggiorna/crea le pagine in `wiki/esercizi/`
@@ -145,7 +158,7 @@ Scorri tutto il wiki e riporta:
 - Link interni rotti
 - Pagine con `TODO` aperto
 - Formule senza definizione dei simboli o senza unità di misura
-- **Risultati senza derivazione** (numero o formula finale senza catena di passaggi)
+- **Esempi senza spiegazione** (codice senza lettura riga per riga, risultato senza catena di passaggi)
 - **Pagine o sezioni senza link alla fonte** `raw/` (pagina/slide mancante)
 - Link `[[*.pdf#page=N]]` che puntano a file inesistenti in `raw/`
 - Salti `❓` ancora aperti
@@ -234,7 +247,7 @@ fonti_pdf: []        # es. ["slide-04-modulazioni.pdf#page=17"]
 Sezioni obbligatorie (i nomi esatti contano: il sito legge *Spiegazione*, *Perché importa* e *Derivazioni*):
 - **Definizione** — precisa, non colloquiale
 - **Formule** — se il concetto ne ha: formula, significato di ogni simbolo, unità di misura, ipotesi di validità; le pagine PDF di comparsa vanno nel titolo della sezione
-- **Derivazioni** — passaggi espansi per ogni risultato non banale (vedi *Espansione dei calcoli*), una sottosezione `###` per derivazione
+- **Derivazioni** — passaggi espansi per ogni esempio o risultato non banale (vedi *Espansione degli esempi*), una sottosezione `###` per derivazione
 - **Spiegazione** — approfondita con esempi concreti
 - **Perché importa** — contesto d'uso nel corso
 - **Connessioni** — link a concetti correlati con spiegazione della relazione
@@ -273,45 +286,41 @@ Sezioni obbligatorie:
 
 ---
 
-## Espansione dei calcoli
+## Espansione degli esempi
 
-Regola centrale di questo wiki: **nessun risultato senza derivazione**.
-Le slide comprimono i passaggi; il wiki li decomprime. Se il PDF scrive «si ottiene $P_e = 10^{-5}$», la pagina wiki deve mostrare *come* ci si arriva.
+Regola centrale di questo wiki: **nessun esempio senza spiegazione**.
+Il corso ha pochi calcoli e molti esempi di codice VHDL, forme d'onda e schemi: le slide li mostrano compressi, il wiki li decomprime. Se il PDF mostra un frammento di codice e il suo risultato («`C := A sla 3` → `1111`», «a `myint` servono 5 bit»), la pagina wiki deve mostrare *perché* si ottiene quel risultato.
 
-Per ogni risultato numerico o simbolico presente in una fonte:
+Per ogni esempio presente in una fonte (codice, forma d'onda, tabella, valore):
 
-1. **Punto di partenza** — da quale formula/ipotesi si parte, con link `[[...]]` al concetto e alla pagina della fonte
-2. **Catena di passaggi** — un passaggio per riga, in blocco `$$...$$`. Vietato saltare da una riga all'altra senza dire cosa è stato fatto: ogni passaggio ha a destra un commento breve (sostituzione, identità usata, approssimazione, cambio di unità)
-3. **Sostituzione numerica** — valori con unità, esplicitati uno per uno
-4. **Risultato** — con unità e cifre significative
-5. **Verifica di sanità** — ordine di grandezza atteso, caso limite, o controllo dimensionale
-6. **Ipotesi usate** — elencate: cosa smette di valere il risultato se un'ipotesi cade
+1. **Cosa descrive** — quale costrutto illustra e quale circuito o comportamento descrive, con link `[[...]]` al concetto
+2. **Lettura riga per riga** — il codice come nella slide, poi una spiegazione di ogni riga o blocco non banale (cosa dichiara, cosa assegna, in quale dominio: concorrente o sequenziale)
+3. **Risultato passo-passo** — per i valori (bit, conversioni, shift, operatori, attributi, ritardi) la catena dei passaggi, uno per riga, in tabella o in blocco `$$...$$` con un commento a destra di ogni passaggio
+4. **Hardware e simulazione** — quale hardware ne inferisce il sintetizzatore (se la slide lo dice o se si ricava senza ipotesi esterne) e come evolvono i segnali in simulazione (eventi, delta, ritardi)
+5. **Verifica** — un controllo indipendente: caso limite, conteggio dei bit, confronto con un altro esempio delle slide
+6. **Trappole** — cosa cambia se si scambia un costrutto con uno simile (segnale/variabile, `sla`/`sll`, `to`/`downto`, ...), solo se ricavabile dalle slide o dalla semantica del linguaggio mostrata nel corso
 
 Formato tipo:
 
 ```markdown
-### Derivazione — [nome risultato] · [[slide-04-modulazioni.pdf#page=17|p. 17]]
+### Derivazione — `A sla 3` · [[1-Principali elementi sintattici VHDL.pdf#page=37|p. 37]]
 **Fonte:** risultato dato senza passaggi
-**Si parte da:** [[formula-x]] — $y = f(x)$
+**Si parte da:** [[operatori-vhdl]] — `sla` fa scorrere a sinistra replicando il bit meno significativo
 
-$$
-\begin{aligned}
-y &= f(x)                 && \text{definizione, } [[formula-x]] \\
-  &= \dots                && \text{sostituisco } x = \dots \\
-  &\approx \dots          && \text{approx valida per } x \ll 1
-\end{aligned}
-$$
+| Passo | A (3 downto 0) | Commento |
+|---|---|---|
+| 0 | 1011 | valore iniziale |
+| 1 | 0111 | shift di 1, entra a destra il vecchio LSB `1` |
+| ... | ... | ... |
 
-**Numeri:** $A = 2\,\text{V}$, $B = 10\,\text{kHz}$ → $y = 3.2 \cdot 10^{-4}\,\text{W}$
-**Sanity check:** ordine di grandezza coerente con [[altro-risultato]]
-**Ipotesi:** rumore gaussiano bianco, canale AWGN, sincronizzazione ideale
+**Verifica:** confronto con `sll`, che fa entrare `0`
 ```
 
-Se un passaggio del PDF non è ricostruibile (manca un dato, il salto non torna):
+Se un passaggio del PDF non è ricostruibile (manca un dato, il risultato non torna):
 - scrivi `> ❓ Salto non ricostruito:` con cosa manca e cosa hai provato
 - **non** riempire il buco inventando — segnala e chiedi
 
-Le approssimazioni della fonte vanno rese esplicite: quale termine è stato trascurato e perché è lecito.
+Se il risultato della slide è sbagliato (refuso), scrivilo con `> ⚠️ Contraddizione:` mostrando il valore corretto e i passaggi che lo danno.
 
 ---
 
@@ -392,7 +401,7 @@ Marcatori di provenienza (`🧩 Derivazione mia`, `📚 Fonte esterna`, `❓ Sal
 **Regole rigide:**
 - `raw/` non si tocca mai
 - Non inventare: se non hai info, scrivi `TODO`. Vale anche per formule e valori numerici
-- Nessun risultato copiato senza derivazione: o lo espandi, o marchi `❓ Salto non ricostruito`
+- Nessun risultato o esempio copiato senza spiegazione: o lo espandi, o marchi `❓ Salto non ricostruito`
 - Nessuna affermazione senza riferimento `[[file.pdf#page=N]]`, o marcata come derivazione mia / fonte esterna
 - Il sito contiene solo il contenuto dei PDF, salvo decisione dell'utente
 - Aggiorna pagine esistenti invece di crearne di ridondanti
@@ -403,22 +412,10 @@ Marcatori di provenienza (`🧩 Derivazione mia`, `📚 Fonte esterna`, `❓ Sal
 
 ## Moduli opzionali
 
-Si scelgono in INIZIALIZZA (o più avanti, su richiesta). Un modulo attivato si aggiunge alla *Struttura Directory* e a `wiki/index.md`; le sezioni dei moduli non attivati si cancellano da questo file.
+Attivati in INIZIALIZZA: **Laboratorio** e **Avanzamento studio**. Gli altri moduli del template (Glossario, Progetto, Pseudocodice e animazioni, Flashcard) non sono attivi: si possono aggiungere su richiesta, prendendone la descrizione dal template `giob22/wiki-template`.
 
 ### Laboratorio — `wiki/laboratorio/`
-Per esercitazioni pratiche (Matlab, Python, simulatori). Il codice del docente va in `raw/scripts/<data-o-argomento>/`, le figure che produce in `raw/assets/` (`lab-<data>-<descrizione>.png`). Una pagina per argomento (`lab-<argomento>.md`): obiettivo, codice commentato riga per riga, cosa si osserva, collegamento ai concetti. In `corso-completo.md` la lezione di laboratorio riporta solo ciò che c'è nel materiale; se non è materia d'esame, chiedi se escluderla dal sito (`sito = false`) e scrivilo in `[sito] note`.
-
-### Glossario — `wiki/glossario.md`
-Per corsi con slide in inglese: tabella `termine inglese | traduzione italiana | [[pagina]]`, in ordine alfabetico, aggiornata a ogni ingest con i termini nuovi.
+Per esercitazioni pratiche (IDE di sviluppo, simulazione, sintesi, board FPGA). Il codice del docente (progetti VHDL, testbench, file di vincoli) va in `raw/scripts/<data-o-argomento>/`, le figure che produce (forme d'onda, schemi RTL) in `raw/assets/` (`lab-<data>-<descrizione>.png`). Una pagina per argomento (`lab-<argomento>.md`): obiettivo, codice commentato riga per riga, cosa si osserva in simulazione o sulla board, collegamento ai concetti. In `corso-completo.md` la lezione di laboratorio riporta solo ciò che c'è nel materiale; se non è materia d'esame, chiedi se escluderla dal sito (`sito = false`) e scrivilo in `[sito] note`.
 
 ### Avanzamento studio — `wiki/avanzamento-studio.md`
 Check-list del programma, una riga per pagina del wiki nell'ordine delle lezioni, con tre colonne: **da fare** (la spunta Claude quando la pagina è completa), **studiato** e **consolidato** (le spunta l'utente). A ogni ingest aggiungi le pagine nuove.
-
-### Progetto — `wiki/progetto/` e operazione PROGETTO
-Per corsi con progetto: `progetto [argomento]` o `annota decisione [...]`. Chiedi il contesto (requisito, alternativa scartata) senza inventare dettagli; salva in `wiki/progetto/[decisione].md` con frontmatter `tipo: decisione`, sezioni **Contesto**, **Decisione**, **Alternative scartate**, **Concetti del corso che la giustificano** (link), **Conseguenze**; appendi a `wiki/log.md`: `## [YYYY-MM-DD] progetto | [decisione]`.
-
-### Pseudocodice e animazioni — corsi di algoritmi
-Lo pseudocodice si riporta **come nella fonte** (stessa numerazione delle righe) in blocchi di codice, con una tabella di traccia su un'istanza piccola (quella delle slide, se c'è). Le pagine entità di categoria `algoritmo` hanno un'animazione `animazione-<nome>.svg` generata da `output/animazioni/genera_animazioni.py`, che **esegue davvero** l'algoritmo: un fotogramma per passo con stato della struttura dati, riga di pseudocodice evidenziata e didascalia «Passo k/N». Prima di incorporarla, controlla alcuni fotogrammi contro la traccia della pagina.
-
-### Flashcard — `wiki/esame/flashcard.md`
-Il plugin Obsidian *Spaced Repetition* è già installato. Con `flashcard [argomento]` genera carte nel formato `domanda::risposta` (una per riga) sotto il tag `#flashcards`, una sezione per lezione, solo su contenuti del wiki già tracciati sui PDF.
